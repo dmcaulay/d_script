@@ -7,6 +7,7 @@ module DScript
 
     rake_tasks do
       load 'tasks/master.rake'
+      load 'tasks/status.rake'
       load 'tasks/runner.rake'
     end
   end
