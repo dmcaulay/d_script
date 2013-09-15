@@ -12,7 +12,7 @@ namespace :d_script do
     runners = {}
     start_time = Time.now
 
-    def print_status(start_id, end_id, current_id, start_time)
+    print_status = lambda do
       percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
       run_time = Time.now - start_time
       if percent_complete > 0
@@ -26,8 +26,12 @@ namespace :d_script do
       end
     end
 
-    def get_block(start_id, end_id)
-      { start_id: start_id, end_id: end_id }.to_json
+    next_block = lambda do
+      { start_id: current_id, end_id: next_end_id }.to_json
+    end
+
+    next_end_id = lambda do
+      current_id += block_size
     end
 
     redis.subscribe(name + "-master") do |on|
@@ -40,7 +44,7 @@ namespace :d_script do
 
       on.message do |ch, msg|
         # status msg
-        return print_status(start_id, end_id, current_id, start_time) if msg == "status"
+        return print_status.call if msg == "status"
 
         # ready msg
         data = JSON.parse(msg)
@@ -49,8 +53,7 @@ namespace :d_script do
         if current_id >= end_id # done?
           redis.publish(runner_ch, "done")
         else
-          block = get_block(current_id, current_id += block_size)
-          redis.publish(runner_ch, block)
+          redis.publish(runner_ch, next_block.call)
         end
       end
     end
