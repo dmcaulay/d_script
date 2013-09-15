@@ -12,27 +12,6 @@ namespace :d_script do
     runners = {}
     start_time = Time.now
 
-    redis.subscribe(name + "-master") do |on|
-      on.subscribe do |ch, subscriptions|
-        puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
-      end
-      on.unsubscribe do |ch, subscriptions|
-        puts "unsubscribed to ##{ch} (#{subscriptions} subscriptions)"
-      end
-
-      on.message do |ch, msg|
-        return print_status if msg == "status"
-        data = JSON.parse(msg)
-        runner_ch = name + "-" + data["name"]
-        runners[runner_ch] = Time.now
-        if done?
-          redis.publish(runner_ch, "done")
-        else
-          redis.publish(runner_ch, next_block)
-        end
-      end
-    end
-
     def print_status
       runners.each do |k, v|
         percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
@@ -55,6 +34,29 @@ namespace :d_script do
     def next_end_id
       current_id += block_size
     end
+
+    redis.subscribe(name + "-master") do |on|
+      on.subscribe do |ch, subscriptions|
+        puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
+      end
+      on.unsubscribe do |ch, subscriptions|
+        puts "unsubscribed to ##{ch} (#{subscriptions} subscriptions)"
+      end
+
+      on.message do |ch, msg|
+        return print_status if msg == "status"
+        data = JSON.parse(msg)
+        runner_ch = name + "-" + data["name"]
+        runners[runner_ch] = Time.now
+        if done?
+          redis.publish(runner_ch, "done")
+        else
+          redis.publish(runner_ch, next_block)
+        end
+      end
+    end
+
+    puts "done"
   end
 end
 

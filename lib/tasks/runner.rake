@@ -14,6 +14,22 @@ namespace :d_script do
     master_ch = name + "-master"
     redis.publish(master_ch, "ready")
 
+    def handle_msg(data)
+      begin
+        puts "running #{script} with #{data}"
+        if output
+          CurrentDScript.run(data["start_id"], data["end_id"], output)
+        else
+          CurrentDScript.run(data["start_id"], data["end_id"])
+        end
+      rescue Exception => e
+        puts "error running #{data}"
+        puts e.inspect
+        until (eval(gets.chomp)) ; end
+        handle_msg(data)
+      end
+    end
+
     runner_ch = name + "-" + runner_name
     redis.subscribe(runner_ch) do |on|
       on.subscribe do |ch, subscriptions|
@@ -30,20 +46,6 @@ namespace :d_script do
       end
     end
 
-    def handle_msg(data)
-      begin
-        puts "running #{script} with #{data}"
-        if output
-          CurrentDScript.run(data["start_id"], data["end_id"], output)
-        else
-          CurrentDScript.run(data["start_id"], data["end_id"])
-        end
-      rescue Exception => e
-        puts "error running #{data}"
-        puts e.inspect
-        until (eval(gets.chomp)) ; end
-        handle_msg(data)
-      end
-    end
+    puts "done"
   end
 end
