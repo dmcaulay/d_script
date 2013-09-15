@@ -1,5 +1,5 @@
 require "d_script/version"
 
 module DScript
-  require "lib/d_script/railtie" if defined?(Rails)
+  require "d_script/railtie" if defined?(Rails)
 end
