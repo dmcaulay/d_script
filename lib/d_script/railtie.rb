@@ -6,8 +6,8 @@ module DScript
     railtie_name :d_script
 
     rake_tasks do
-      load 'lib/d_script/tasks/master.rake'
-      load 'lib/d_script/tasks/runner.rake'
+      load 'tasks/master.rake'
+      load 'tasks/runner.rake'
     end
   end
 end
