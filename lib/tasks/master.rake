@@ -18,7 +18,7 @@ namespace :d_script do
       run_time = Time.now - start_time
       if percent_complete > 0
         prediction = run_time / percent_complete
-        puts "finish time: #{start_time + prediction}"
+        puts "percentage: #{percent_complete*100}% finish time: #{start_time + prediction}"
       else
         puts "add runners to start processing ids"
       end
