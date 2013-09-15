@@ -4,8 +4,8 @@ require 'rails'
 module DScript
   class Railtie < Rails::Railtie
     rake_tasks do
-      load 'tasks/master.rake'
-      load 'tasks/runner.rake'
+      load 'lib/d_script/tasks/master.rake'
+      load 'lib/d_script/tasks/runner.rake'
     end
   end
 end
