@@ -12,7 +12,8 @@ namespace :d_script do
     output = File.open(output_file, 'w') if output_file
 
     master_ch = name + "-master"
-    redis.publish(master_ch, "ready")
+    ready_msg = {msg: "ready", name: runner_ch}
+    redis.publish(master_ch, ready_msg)
 
     def handle_msg(data)
       begin
@@ -42,7 +43,7 @@ namespace :d_script do
       on.message do |ch, msg|
         return redis.unsubscribe(runner_ch) if msg == "done"
         handle_msg(data)
-        redis.publish(master_ch, "ready")
+        redis.publish(master_ch, ready_msg)
       end
     end
 

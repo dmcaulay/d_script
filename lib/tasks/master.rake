@@ -12,27 +12,18 @@ namespace :d_script do
     runners = {}
     start_time = Time.now
 
-    def print_status
+    def print_status(start_id, end_id, current_id, start_time)
       percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
       run_time = Time.now - start_time
       prediction = run_time / percent_complete
-      remaining = prediction - run_time
-      puts "finish time: #{Time.now + remaining}"
+      puts "finish time: #{start_time + remaining}"
       runners.each do |k, v|
         puts "#{k} = #{v}"
       end
     end
 
-    def done?
-      current_id >= end_id
-    end
-
-    def next_block
-      { start_id: current_id, end_id: next_end_id }.to_json
-    end
-
-    def next_end_id
-      current_id += block_size
+    def get_block(start_id, end_id)
+      { start_id: start_id, end_id: end_id }.to_json
     end
 
     redis.subscribe(name + "-master") do |on|
@@ -44,14 +35,18 @@ namespace :d_script do
       end
 
       on.message do |ch, msg|
-        return print_status if msg == "status"
+        # status msg
+        return print_status(start_id, end_id, current_id, start_time) if msg == "status"
+
+        # ready msg
         data = JSON.parse(msg)
         runner_ch = name + "-" + data["name"]
         runners[runner_ch] = Time.now
-        if done?
+        if current_id >= end_id # done?
           redis.publish(runner_ch, "done")
         else
-          redis.publish(runner_ch, next_block)
+          block = get_block(current_id, current_id += block_size)
+          redis.publish(runner_ch, block)
         end
       end
     end
