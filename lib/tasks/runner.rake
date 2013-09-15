@@ -12,8 +12,7 @@ namespace :d_script do
     pub_redis = Redis.new(REDIS_SETTINGS)
     sub_redis = Redis.new(REDIS_SETTINGS)
     output = File.open(output_file, 'w') if output_file
-    runner_name = name + '-runner-' + pub_redis.incr(name).to_s
-    runner_ch = name + "-" + runner_name
+    runner_ch = name + '-runner-' + pub_redis.incr(name).to_s
 
     master_ch = name + "-master"
     ready_msg = {msg: "ready", name: runner_ch}.to_json

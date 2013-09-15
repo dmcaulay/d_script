@@ -50,7 +50,7 @@ namespace :d_script do
         else
           # ready msg
           data = JSON.parse(msg)
-          runner_ch = name + "-" + data["name"]
+          runner_ch = data["name"]
           runners[runner_ch] = Time.now
           puts "start publishing"
           if current_id >= end_id # done?
