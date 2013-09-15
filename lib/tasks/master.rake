@@ -27,7 +27,7 @@ namespace :d_script do
     end
 
     next_block = lambda do
-      { start_id: current_id, end_id: next_end_id }.to_json
+      { start_id: current_id, end_id: next_end_id.call }.to_json
     end
 
     next_end_id = lambda do
