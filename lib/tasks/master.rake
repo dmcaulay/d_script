@@ -7,7 +7,8 @@ namespace :d_script do
 
     puts "d_script:master started with name=#{name} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size}"
 
-    redis = Redis.new(REDIS_SETTINGS)
+    pub_redis = Redis.new(REDIS_SETTINGS)
+    sub_redis = Redis.new(REDIS_SETTINGS)
     current_id = start_id
     runners = {}
     start_time = Time.now
@@ -34,7 +35,7 @@ namespace :d_script do
       { start_id: current_id, end_id: next_end_id.call }.to_json
     end
 
-    redis.subscribe(name + "-master") do |on|
+    sub_redis.subscribe(name + "-master") do |on|
       on.subscribe do |ch, subscriptions|
         puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
       end
@@ -52,9 +53,9 @@ namespace :d_script do
           runner_ch = name + "-" + data["name"]
           runners[runner_ch] = Time.now
           if current_id >= end_id # done?
-            redis.publish(runner_ch, "done")
+            pub_redis.publish(runner_ch, "done")
           else
-            redis.publish(runner_ch, next_block.call)
+            pub_redis.publish(runner_ch, next_block.call)
           end
         end
       end

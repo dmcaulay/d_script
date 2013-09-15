@@ -9,14 +9,15 @@ namespace :d_script do
     load_script = lambda { load script }
     load_script.call
     puts "loaded #{script}"
-    redis = Redis.new(REDIS_SETTINGS)
+    pub_redis = Redis.new(REDIS_SETTINGS)
+    sub_redis = Redis.new(REDIS_SETTINGS)
     output = File.open(output_file, 'w') if output_file
-    runner_name = name + '-runner-' + redis.incr(name).to_s
+    runner_name = name + '-runner-' + pub_redis.incr(name).to_s
     runner_ch = name + "-" + runner_name
 
     master_ch = name + "-master"
     ready_msg = {msg: "ready", name: runner_ch}.to_json
-    redis.publish(master_ch, ready_msg)
+    pub_redis.publish(master_ch, ready_msg)
 
     handle_msg = lambda do |data|
       begin
@@ -34,7 +35,7 @@ namespace :d_script do
       end
     end
 
-    redis.subscribe(runner_ch) do |on|
+    sub_redis.subscribe(runner_ch) do |on|
       on.subscribe do |ch, subscriptions|
         puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
       end
@@ -44,10 +45,10 @@ namespace :d_script do
 
       on.message do |ch, msg|
         if msg == "done"
-          redis.unsubscribe(runner_ch)
+          pub_redis.unsubscribe(runner_ch)
         else
           handle_msg.call(data)
-          redis.publish(master_ch, ready_msg)
+          pub_redis.publish(master_ch, ready_msg)
         end
       end
     end
