@@ -26,12 +26,12 @@ namespace :d_script do
       end
     end
 
-    next_block = lambda do
-      { start_id: current_id, end_id: next_end_id.call }.to_json
-    end
-
     next_end_id = lambda do
       current_id += block_size
+    end
+
+    next_block = lambda do
+      { start_id: current_id, end_id: next_end_id.call }.to_json
     end
 
     redis.subscribe(name + "-master") do |on|
