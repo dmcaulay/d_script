@@ -15,7 +15,7 @@ namespace :d_script do
     ready_msg = {msg: "ready", name: runner_ch}
     redis.publish(master_ch, ready_msg)
 
-    def handle_msg(data)
+    handle_msg = lambda do |data|
       begin
         puts "running #{script} with #{data}"
         if output
@@ -44,7 +44,7 @@ namespace :d_script do
         if msg == "done"
           redis.unsubscribe(runner_ch)
         else
-          handle_msg(data)
+          handle_msg.call(data)
           redis.publish(master_ch, ready_msg)
         end
       end
