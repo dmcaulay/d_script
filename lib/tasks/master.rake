@@ -52,11 +52,13 @@ namespace :d_script do
           data = JSON.parse(msg)
           runner_ch = name + "-" + data["name"]
           runners[runner_ch] = Time.now
+          puts "start publishing"
           if current_id >= end_id # done?
             pub_redis.publish(runner_ch, "done")
           else
             pub_redis.publish(runner_ch, next_block.call)
           end
+          puts "end publishing"
         end
       end
     end
