@@ -6,7 +6,8 @@ namespace :d_script do
 
     puts "d_script:runner started with name=#{name} script=#{script} output_file=#{output_file}"
 
-    load script
+    load_script = lambda { load script }
+    load_script.call
     puts "loaded #{script}"
     redis = Redis.new(REDIS_SETTINGS)
     output = File.open(output_file, 'w') if output_file
