@@ -10,6 +10,7 @@ namespace :d_script do
     puts "loaded #{script}"
     redis = Redis.new(REDIS_SETTINGS)
     output = File.open(output_file, 'w') if output_file
+    runner_ch = name + "-" + runner_name
 
     master_ch = name + "-master"
     ready_msg = {msg: "ready", name: runner_ch}
@@ -31,7 +32,6 @@ namespace :d_script do
       end
     end
 
-    runner_ch = name + "-" + runner_name
     redis.subscribe(runner_ch) do |on|
       on.subscribe do |ch, subscriptions|
         puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
