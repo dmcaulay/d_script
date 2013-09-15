@@ -14,7 +14,7 @@ namespace :d_script do
     runner_ch = name + "-" + runner_name
 
     master_ch = name + "-master"
-    ready_msg = {msg: "ready", name: runner_ch}
+    ready_msg = {msg: "ready", name: runner_ch}.to_json
     redis.publish(master_ch, ready_msg)
 
     handle_msg = lambda do |data|
