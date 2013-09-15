@@ -5,12 +5,21 @@ namespace :d_script do
     end_id = args[:end_id].to_i
     block_size = args[:block_size].to_i
 
+    puts "d_script:master started with name=#{name} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size}"
+
     redis = Redis.new(REDIS_SETTINGS)
     current_id = start_id
     runners = {}
     start_time = Time.now
 
     redis.subscribe(name + "-master") do |on|
+      on.subscribe do |ch, subscriptions|
+        puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
+      end
+      on.unsubscribe do |ch, subscriptions|
+        puts "unsubscribed to ##{ch} (#{subscriptions} subscriptions)"
+      end
+
       on.message do |ch, msg|
         return print_status if msg == "status"
         data = JSON.parse(msg)
