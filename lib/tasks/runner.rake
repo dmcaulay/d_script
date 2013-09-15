@@ -10,7 +10,7 @@ namespace :d_script do
     puts "loaded #{script}"
     redis = Redis.new(REDIS_SETTINGS)
     output = File.open(output_file, 'w') if output_file
-    runner_name = name + '-runner-' + Redis.incr(name).to_s
+    runner_name = name + '-runner-' + redis.incr(name).to_s
     runner_ch = name + "-" + runner_name
 
     master_ch = name + "-master"
