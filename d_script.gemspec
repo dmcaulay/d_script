@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = DScript::VERSION
   spec.authors       = ["Dan McAulay"]
   spec.email         = ["dmcaulay@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{run distributed scripts using rake and redis}
+  spec.summary       = %q{run distributed scripts using rake and redis}
   spec.homepage      = ""
   spec.license       = "MIT"
 
