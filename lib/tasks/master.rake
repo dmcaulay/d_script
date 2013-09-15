@@ -43,17 +43,19 @@ namespace :d_script do
       end
 
       on.message do |ch, msg|
-        # status msg
-        return print_status.call if msg == "status"
-
-        # ready msg
-        data = JSON.parse(msg)
-        runner_ch = name + "-" + data["name"]
-        runners[runner_ch] = Time.now
-        if current_id >= end_id # done?
-          redis.publish(runner_ch, "done")
+        if msg == "status"
+          # status msg
+          print_status.call
         else
-          redis.publish(runner_ch, next_block.call)
+          # ready msg
+          data = JSON.parse(msg)
+          runner_ch = name + "-" + data["name"]
+          runners[runner_ch] = Time.now
+          if current_id >= end_id # done?
+            redis.publish(runner_ch, "done")
+          else
+            redis.publish(runner_ch, next_block.call)
+          end
         end
       end
     end

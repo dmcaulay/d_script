@@ -41,9 +41,12 @@ namespace :d_script do
       end
 
       on.message do |ch, msg|
-        return redis.unsubscribe(runner_ch) if msg == "done"
-        handle_msg(data)
-        redis.publish(master_ch, ready_msg)
+        if msg == "done"
+          redis.unsubscribe(runner_ch)
+        else
+          handle_msg(data)
+          redis.publish(master_ch, ready_msg)
+        end
       end
     end
 
