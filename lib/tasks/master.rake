@@ -13,12 +13,12 @@ namespace :d_script do
     start_time = Time.now
 
     def print_status
+      percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
+      run_time = Time.now - start_time
+      prediction = run_time / percent_complete
+      remaining = prediction - run_time
+      puts "finish time: #{Time.now + remaining}"
       runners.each do |k, v|
-        percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
-        run_time = Time.now - start_time
-        prediction = run_time / percent_complete
-        remaining = prediction - run_time
-        puts "finish time: #{Time.now + remaining}"
         puts "#{k} = #{v}"
       end
     end
