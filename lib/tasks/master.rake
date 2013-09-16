@@ -60,7 +60,7 @@ namespace :d_script do
           puts "processing #{res}"
           pub_redis.publish(runner_ch, res)
 
-          sub_redis.unsubscribe(runner_ch) if done.call
+          sub_redis.unsubscribe(name + '-master') if done.call
 
           runners[runner_ch] = Time.now
         end
