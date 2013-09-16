@@ -1,25 +1,11 @@
-require "d_emitter"
+require "base"
 
 module DScript
-  class Runner
-    include DEmitter
-
-    # d_emitter
-    attr_accessor :events, :name, :pub_redis, :sub_redis, :base_name
-
-    def initialize(name, settings)
-      @events = {}
-      @pub_redis = Redis.new(settings)
-      @sub_redis = Redis.new(settings)
-      @name = name + '-runner-' + pub_redis.incr(name).to_s
-      @base_name = name
-    end
-
-    # run
+  class Runner < Base
     attr_accessor :script, :output
 
-    def master_ch
-      base_name + "-master"
+    def name
+      @name ||= base_name + '-runner-' + pub_redis.incr(name).to_s
     end
 
     def load_script

@@ -1,23 +1,10 @@
-require "d_emitter"
+require "base"
 
 module DScript
-  class Status
-    include DEmitter
-
-    # d_emitter
-    attr_accessor :events, :name, :pub_redis, :sub_redis
-
-    def initialize(name, settings)
-      @events = {}
-      @name = name + '-status'
-      @master_ch = name + '-master'
-      @pub_redis = Redis.new(settings)
-      @sub_redis = Redis.new(settings)
-    end
-
+  class Status < Base
     def run
       on :started do
-        d_emit(@master_ch, event: "status")
+        d_emit(master_ch, event: "status")
       end
 
       on "status" do |data|

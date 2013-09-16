@@ -1,22 +1,12 @@
-require "d_emitter"
+require "base"
 
 module DScript
-  class Master
-    include DEmitter
-
-    # d_emitter
-    attr_accessor :events, :name, :pub_redis, :sub_redis, :base_name
-
-    def initialize(name, settings)
-      @events = {}
-      @name = name + '-master'
-      @base_name = name
-      @pub_redis = Redis.new(settings)
-      @sub_redis = Redis.new(settings)
-    end
-
-    # run
+  class Master < Base
     attr_accessor :start_id, :end_id, :block_size, :current_id, :runners, :start_time
+
+    def name
+      master_ch
+    end
 
     def done?
       current_id >= end_id
