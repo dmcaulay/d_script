@@ -26,7 +26,7 @@ module DScript
     end
 
     def next_block
-      { start_id: current_id, end_id: next_end_id }
+      { event: "next_block", start_id: current_id, end_id: next_end_id }
     end
 
     def run(start_id, end_id, block_size)
@@ -43,7 +43,7 @@ module DScript
 
         if done?
           unsubscribe(runner_ch)
-          res = "done"
+          res = { event: "done" }
         else
           subscribe(runner_ch) unless runners[runner_ch]
           runners[runner_ch] = Time.now

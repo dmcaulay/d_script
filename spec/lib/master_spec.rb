@@ -39,7 +39,7 @@ describe DScript::Master do
     it "the next block to be processed" do
       master.current_id = 10
       master.block_size = 12
-      master.next_block.should == { start_id: 10, end_id: 22 }
+      master.next_block.should == { event: "next_block", start_id: 10, end_id: 22 }
     end
   end
 end
