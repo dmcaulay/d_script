@@ -10,7 +10,7 @@ module DScript
     def initialize(name, settings)
       @events = {}
       @name = name + '-status'
-      @master_ch = name + '-status'
+      @master_ch = name + '-master'
       @pub_redis = Redis.new(settings)
       @sub_redis = Redis.new(settings)
     end
