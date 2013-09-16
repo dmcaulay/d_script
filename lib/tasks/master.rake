@@ -35,7 +35,7 @@ namespace :d_script do
       { start_id: current_id, end_id: next_end_id.call }.to_json
     end
 
-    done? = lambda do
+    done = lambda do
       current_id >= end_id
     end
 
@@ -55,12 +55,12 @@ namespace :d_script do
           # ready msg
           data = JSON.parse(msg)
           runner_ch = data["name"]
-          res = done? ? "done" : next_block.call
+          res = done ? "done" : next_block.call
 
           puts "processing #{res}"
           pub_redis.publish(runner_ch, res)
 
-          sub_redis.unsubscribe(runner_ch) if done?
+          sub_redis.unsubscribe(runner_ch) if done
 
           runners[runner_ch] = Time.now
         end
