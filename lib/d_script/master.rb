@@ -47,6 +47,8 @@ module DScript
       end
 
       start
+
+      puts "total time: #{Time.now - start_time}"
     end
 
     def add_runner(ch)
