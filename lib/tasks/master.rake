@@ -40,12 +40,12 @@ namespace :d_script do
     end
 
     subscribe = lambda do |runner_ch|
-      puts "##{runner_ch} subscribed"
+      puts "##{runner_ch} subscribed (#{runners.length})"
     end
 
     unsubscribe = lambda do |runner_ch|
       runners.delete(runner_ch)
-      puts "##{runner_ch} unsubscribed"
+      puts "##{runner_ch} unsubscribed (#{runners.length})"
       sub_redis.unsubscribe(name + '-master') if runners.empty?
     end
 
