@@ -55,12 +55,12 @@ namespace :d_script do
           # ready msg
           data = JSON.parse(msg)
           runner_ch = data["name"]
-          res = done ? "done" : next_block.call
+          res = done.call ? "done" : next_block.call
 
           puts "processing #{res}"
           pub_redis.publish(runner_ch, res)
 
-          sub_redis.unsubscribe(runner_ch) if done
+          sub_redis.unsubscribe(runner_ch) if done.call
 
           runners[runner_ch] = Time.now
         end
