@@ -62,17 +62,20 @@ namespace :d_script do
           data = JSON.parse(msg)
           runner_ch = data["name"]
 
+          new_subscriber = false
           if done.call
             unsubscribe.call(runner_ch)
             res = "done"
           else
             puts "runner #{runner_ch} subscribed" unless runners[runner_ch]
+            new_subscriber = true unless runners[runner_ch]
             runners[runner_ch] = Time.now
             res = next_block.call
           end
 
-          # puts "processing #{runner_ch} #{res}"
+          puts "start #{runner_ch} #{res}" if new_subscriber
           pub_redis.publish(runner_ch, res)
+          puts "end #{runner_ch} #{res}" if new_subscriber
         end
       end
     end

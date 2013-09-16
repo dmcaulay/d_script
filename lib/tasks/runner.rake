@@ -20,7 +20,6 @@ namespace :d_script do
 
     handle_msg = lambda do |data|
       begin
-        puts "running #{script} with #{data}"
         if output
           CurrentDScript.run(data["start_id"], data["end_id"], output)
         else
