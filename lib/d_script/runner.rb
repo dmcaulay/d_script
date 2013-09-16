@@ -3,7 +3,7 @@ module DScript
     attr_accessor :script, :output
 
     def name
-      @name ||= base_name + '-runner-' + pub_redis.incr(name).to_s
+      @name ||= base_name + '-runner-' + pub_redis.incr(base_name).to_s
     end
 
     def load_script

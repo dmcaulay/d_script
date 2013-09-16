@@ -1,5 +1,9 @@
 module DScript
   class Status < Base
+    def name
+      @base_name + '-status'
+    end
+
     def run
       on :started do
         d_emit(master_ch, event: "status")
