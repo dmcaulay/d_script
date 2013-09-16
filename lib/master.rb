@@ -5,11 +5,12 @@ module DScript
     include DEmitter
 
     # d_emitter
-    attr_accessor :events, :name, :pub_redis, :sub_redis
+    attr_accessor :events, :name, :pub_redis, :sub_redis, :base_name
 
     def initialize(name, settings)
       @events = {}
       @name = name + '-master'
+      @base_name = name
       @pub_redis = Redis.new(settings)
       @sub_redis = Redis.new(settings)
     end
@@ -71,17 +72,19 @@ module DScript
     end
 
     def print_status
+      status = ""
       percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
       run_time = Time.now - start_time
       if percent_complete > 0
         prediction = run_time / percent_complete
-        puts "percentage: #{percent_complete*100}% finish time: #{start_time + prediction}"
+        status << "percentage: #{percent_complete*100}% finish time: #{start_time + prediction}"
       else
-        puts "add runners to start processing ids"
+        status << "add runners to start processing ids"
       end
       runners.each do |k, v|
-        puts "#{k} = #{v}"
+        status << "\n#{k} = #{v}"
       end
+      d_emit("#{base_name}-status", event: "status", status: status)
     end
   end
 end
