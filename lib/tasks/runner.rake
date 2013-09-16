@@ -46,7 +46,7 @@ namespace :d_script do
         if msg == "done"
           pub_redis.unsubscribe(runner_ch)
         else
-          handle_msg.call(data)
+          handle_msg.call(JSON.parse(msg))
           pub_redis.publish(master_ch, ready_msg)
         end
       end
