@@ -1,5 +1,5 @@
 namespace :d_script do
-  task :status, :name do |t, args|
+  task :status, [ :name ] => [ :environment ] do |t, args|
     name = args[:name]
     puts "requesting status for #{name}"
 

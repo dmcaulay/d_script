@@ -1,5 +1,5 @@
 namespace :d_script do
-  task :runner, :name, :output_file do |t, args|
+  task :runner, [ :name, :output_file ] => [ :environment ] do |t, args|
     name = args[:name]
     output_file = args[:output_file]
 

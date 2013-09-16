@@ -1,5 +1,5 @@
 namespace :d_script do
-  task :master, :name, :script, :start_id, :end_id, :block_size do |t, args|
+  task :master, [ :name, :script, :start_id, :end_id, :block_size ] => [ :environment ] do |t, args|
     name = args[:name]
     script = args[:script]
     start_id = args[:start_id].to_i
