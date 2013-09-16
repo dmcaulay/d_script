@@ -5,11 +5,13 @@ module DScript
     include DEmitter
 
     # d_emitter
-    attr_accessor :name, :pub_redis
+    attr_accessor :events, :name, :pub_redis, :sub_redis
 
     def initialize(name, settings)
+      @events = {}
       @name = name + '-status'
       @pub_redis = Redis.new(settings)
+      @sub_redis = Redis.new(settings)
     end
 
     def run
