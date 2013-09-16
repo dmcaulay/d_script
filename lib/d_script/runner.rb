@@ -46,8 +46,9 @@ module DScript
         ready
       rescue Exception => e
         puts "error running #{block}"
-        puts e.inspect
-        until (eval(gets.chomp)) ; end
+        puts e.message
+        puts e.backtrace.join('\n')
+        until (eval($stdin.gets.chomp)) ; end
         handle_block(block)
       end
     end
