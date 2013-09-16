@@ -3,7 +3,7 @@ namespace :d_script do
     name = args[:name]
     output_file = args[:output_file]
 
-    puts "d_script:runner started with name=#{name} script=#{script} output_file=#{output_file}"
+    puts "d_script:runner started with name=#{name} output_file=#{output_file}"
 
     runner = DScript::Runner.new(name, REDIS_SETTINGS)
     runner.run(output_file)

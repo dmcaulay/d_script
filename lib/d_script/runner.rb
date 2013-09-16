@@ -18,14 +18,13 @@ module DScript
       # init
       @output = File.open(output_file, 'w') if output_file
 
-      load_script
-
       on :started do
         d_emit(master_ch, event: "register", name: name)
       end
 
       on "registered" do |data|
         @script = data["script"]
+        load_script
         ready
       end
 

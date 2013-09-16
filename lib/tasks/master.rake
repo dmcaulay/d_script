@@ -6,7 +6,7 @@ namespace :d_script do
     end_id = args[:end_id].to_i
     block_size = args[:block_size].to_i
 
-    puts "d_script:master started with name=#{name} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size}"
+    puts "d_script:master started with name=#{name} script=#{script} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size}"
 
     runner = DScript::Master.new(name, REDIS_SETTINGS)
     runner.run(script, start_id, end_id, block_size)
