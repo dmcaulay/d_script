@@ -18,9 +18,9 @@ describe EventEmitter do
   end
 
   describe "remove" do
-    let(:called) { false }
     before(:each) do
-      emitter.on(:test_ev) { puts "called" }
+      @called = false
+      emitter.on(:test_ev) { @called = true }
     end
 
     it "removes an event" do
@@ -31,7 +31,7 @@ describe EventEmitter do
     it "no longer calls the method" do
       emitter.remove(:test_ev)
       emitter.emit(:test_ev)
-      called.should be_false
+      @called.should be_false
     end
   end
 
