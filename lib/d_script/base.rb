@@ -9,6 +9,7 @@ module DScript
 
     def initialize(name, settings)
       @events = {}
+      settings[:timeout] = nil
       @pub_redis = Redis.new(settings)
       @sub_redis = Redis.new(settings)
       @base_name = name
