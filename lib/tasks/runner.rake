@@ -34,10 +34,10 @@ namespace :d_script do
     sub_redis.subscribe(runner_ch) do |on|
       on.subscribe do |ch, subscriptions|
         pub_redis.publish(master_ch, ready_msg)
-        puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
+        puts "subscribed to ##{ch}"
       end
       on.unsubscribe do |ch, subscriptions|
-        puts "unsubscribed to ##{ch} (#{subscriptions} subscriptions)"
+        puts "unsubscribed to ##{ch}"
       end
 
       on.message do |ch, msg|
