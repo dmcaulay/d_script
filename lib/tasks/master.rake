@@ -41,6 +41,7 @@ namespace :d_script do
 
     unsubscribe = lambda do |runner_ch|
       runners.delete(runner_ch)
+      puts "runner #{runner_ch} unsubscribed" unless runners[runner_ch]
       sub_redis.unsubscribe(name + '-master') if runners.empty?
     end
 
@@ -65,11 +66,12 @@ namespace :d_script do
             unsubscribe.call(runner_ch)
             res = "done"
           else
+            puts "runner #{runner_ch} subscribed" unless runners[runner_ch]
             runners[runner_ch] = Time.now
             res = next_block.call
           end
 
-          puts "processing #{runner_ch} #{res}"
+          # puts "processing #{runner_ch} #{res}"
           pub_redis.publish(runner_ch, res)
         end
       end
