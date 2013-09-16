@@ -73,9 +73,7 @@ namespace :d_script do
             res = next_block.call
           end
 
-          puts "start #{runner_ch} #{res}" if new_subscriber
           pub_redis.publish(runner_ch, res)
-          puts "end #{runner_ch} #{res}" if new_subscriber
         end
       end
     end
