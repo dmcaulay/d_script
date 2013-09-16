@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EventEmitter do
+describe DScript::EventEmitter do
   let(:emitter) { Emitter.new }
   before(:each) do
     @called = false
@@ -40,7 +40,7 @@ describe EventEmitter do
   end
 
   class Emitter
-    include EventEmitter
+    include DScript::EventEmitter
     attr_accessor :events
 
     def initialize

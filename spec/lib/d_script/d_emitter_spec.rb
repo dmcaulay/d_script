@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DEmitter do
+describe DScript::DEmitter do
   let(:settings) do
     { driver: "hiredis", url: "redis://localhost:6379", db: 0, timeout: 5 }
   end
@@ -20,7 +20,7 @@ describe DEmitter do
   end
 
   class DEmitterTest
-    include DEmitter
+    include DScript::DEmitter
 
     attr_accessor :events, :name, :pub_redis, :sub_redis
 
