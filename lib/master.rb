@@ -72,18 +72,15 @@ module DScript
     end
 
     def print_status
-      puts "printing status"
       status = ""
       percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
       run_time = Time.now - start_time
       if percent_complete > 0
         prediction = run_time / percent_complete
         status << "percentage: #{percent_complete*100}% finish time: #{start_time + prediction}"
-        puts "current #{status}"
       else
         status << "add runners to start processing ids"
       end
-      puts "runners"
       runners.each do |k, v|
         status << "\n#{k} = #{v}"
       end
