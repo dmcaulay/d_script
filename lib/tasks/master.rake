@@ -57,7 +57,7 @@ namespace :d_script do
           runner_ch = data["name"]
           res = done.call ? "done" : next_block.call
 
-          puts "processing #{res}"
+          puts "processing #{runner_ch} #{res}"
           pub_redis.publish(runner_ch, res)
 
           sub_redis.unsubscribe(name + '-master') if done.call
