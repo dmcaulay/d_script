@@ -39,18 +39,22 @@ namespace :d_script do
       current_id >= end_id
     end
 
+    subscribe = lambda do |runner_ch|
+      puts "##{runner_ch} subscribed"
+    end
+
     unsubscribe = lambda do |runner_ch|
       runners.delete(runner_ch)
-      puts "runner #{runner_ch} unsubscribed" unless runners[runner_ch]
+      puts "##{runner_ch} unsubscribed"
       sub_redis.unsubscribe(name + '-master') if runners.empty?
     end
 
     sub_redis.subscribe(name + "-master") do |on|
       on.subscribe do |ch, subscriptions|
-        puts "subscribed to ##{ch} (#{subscriptions} subscriptions)"
+        puts "subscribed to ##{ch}"
       end
       on.unsubscribe do |ch, subscriptions|
-        puts "unsubscribed to ##{ch} (#{subscriptions} subscriptions)"
+        puts "unsubscribed to ##{ch}"
       end
 
       on.message do |ch, msg|
@@ -62,17 +66,15 @@ namespace :d_script do
           data = JSON.parse(msg)
           runner_ch = data["name"]
 
-          new_subscriber = false
           if done.call
             unsubscribe.call(runner_ch)
             res = "done"
           else
-            puts "runner #{runner_ch} subscribed" unless runners[runner_ch]
-            new_subscriber = true unless runners[runner_ch]
-            runners[runner_ch] = Time.now
+            subscribe.call(runner_ch) unless runners[runner_ch]
             res = next_block.call
           end
 
+          runners[runner_ch] = Time.now
           pub_redis.publish(runner_ch, res)
         end
       end
