@@ -44,7 +44,7 @@ namespace :d_script do
 
       on.message do |ch, msg|
         if msg == "done"
-          pub_redis.unsubscribe(runner_ch)
+          sub_redis.unsubscribe(runner_ch)
         else
           handle_msg.call(JSON.parse(msg))
           pub_redis.publish(master_ch, ready_msg)
