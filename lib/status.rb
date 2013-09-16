@@ -10,13 +10,14 @@ module DScript
     def initialize(name, settings)
       @events = {}
       @name = name + '-status'
+      @master_ch = name + '-status'
       @pub_redis = Redis.new(settings)
       @sub_redis = Redis.new(settings)
     end
 
     def run
       on :started do
-        d_emit(@name, event: "status")
+        d_emit(@master_ch, event: "status")
       end
 
       on "status" do |data|
