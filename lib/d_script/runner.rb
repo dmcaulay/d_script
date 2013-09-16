@@ -11,17 +11,21 @@ module DScript
     end
 
     def ready
-      d_emit(master_ch, event: "ready", name: @name)
+      d_emit(master_ch, event: "ready", name: name)
     end
 
-    def run(script, output_file)
+    def run(output_file)
       # init
-      @script = script
       @output = File.open(output_file, 'w') if output_file
 
       load_script
 
       on :started do
+        d_emit(master_ch, event: "register", name: name)
+      end
+
+      on "registered" do |data|
+        @script = data["script"]
         ready
       end
 

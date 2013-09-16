@@ -18,7 +18,7 @@ module DScript
       { event: "next_block", start_id: current_id, end_id: next_end_id }
     end
 
-    def run(start_id, end_id, block_size)
+    def run(script, start_id, end_id, block_size)
       # init
       @start_id = start_id
       @end_id = end_id
@@ -26,6 +26,11 @@ module DScript
       @current_id = start_id
       @runners = {}
       @start_time = Time.now
+
+      on "register" do |data|
+        runner_ch = data["name"]
+        d_emit(runner_ch, event: "registered", script: script)
+      end
 
       on "ready" do |data|
         runner_ch = data["name"]
