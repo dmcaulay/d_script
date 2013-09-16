@@ -3,6 +3,6 @@ namespace :d_script do
     name = args[:name]
     puts "requesting status for #{name}"
     redis = Redis.new(REDIS_SETTINGS)
-    redis.publish(name + "-master", "status")
+    redis.publish(name + "-master", {event: "status"})
   end
 end

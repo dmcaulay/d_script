@@ -53,6 +53,10 @@ module DScript
         d_emit(runner_ch, res)
       end
 
+      on "status" do
+        print_status
+      end
+
       start
     end
 
