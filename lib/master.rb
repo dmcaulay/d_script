@@ -84,6 +84,7 @@ module DScript
       runners.each do |k, v|
         status << "\n#{k} = #{v}"
       end
+      puts status
       d_emit("#{base_name}-status", event: "status", status: status)
     end
   end
