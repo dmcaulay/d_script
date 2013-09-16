@@ -1,5 +1,5 @@
 module DScript
-  class Master < Base
+  class Master < DScript::Base
     attr_accessor :start_id, :end_id, :block_size, :current_id, :runners, :start_time
 
     def name

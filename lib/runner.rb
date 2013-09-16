@@ -1,5 +1,5 @@
 module DScript
-  class Runner < Base
+  class Runner < DScript::Base
     attr_accessor :script, :output
 
     def name
