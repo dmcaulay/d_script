@@ -2,27 +2,31 @@ require 'spec_helper'
 
 describe EventEmitter do
   let(:emitter) { Emitter.new }
+  before(:each) do
+    @called = false
+    emitter.on(:test_ev) { @called = true }
+  end
 
   describe "on" do
     it "adds an event" do
-      emitter.on(:test_ev) { ; }
       emitter.count.should == 1
     end
 
     it "calls the method on emit" do
-      called = false
-      emitter.on(:test_ev) { called = true }
       emitter.emit(:test_ev)
-      called.should be_true
+      @called.should be_true
+    end
+  end
+
+  describe "emit" do
+    it "accepts data" do
+      emitter.on(:with_data) { |data| @called = data }
+      emitter.emit(:with_data, "test-data")
+      @called.should == "test-data"
     end
   end
 
   describe "remove" do
-    before(:each) do
-      @called = false
-      emitter.on(:test_ev) { @called = true }
-    end
-
     it "removes an event" do
       emitter.remove(:test_ev)
       emitter.count.should == 0
