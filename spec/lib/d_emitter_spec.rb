@@ -4,14 +4,14 @@ describe DEmitter do
   let(:settings) do
     { driver: "hiredis", url: "redis://localhost:6379", db: 0, timeout: 5 }
   end
-  let(:emitter) { Emitter.new("test", settings) }
+  let(:emitter) { DEmitterTest.new("test", settings) }
 
   describe "start" do
     it "starts the emitter" do
       called = false
       emitter.on("test-ev") { |data| called = true }
       emitter.on(:started) do
-        emitter.publish("test", { event: "test-ev" })
+        emitter.d_emit("test", { event: "test-ev" })
         emitter.stop
       end
       emitter.start
@@ -19,7 +19,7 @@ describe DEmitter do
     end
   end
 
-  class Emitter
+  class DEmitterTest
     include DEmitter
 
     attr_accessor :events, :name, :pub_redis, :sub_redis

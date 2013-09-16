@@ -25,7 +25,7 @@ module DEmitter
     sub_redis.unsubscribe(name)
   end
 
-  def publish(ch, data)
+  def d_emit(ch, data)
     pub_redis.publish(ch, data.to_json)
   end
 end

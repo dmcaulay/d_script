@@ -42,27 +42,27 @@ module DScript
         runner_ch = data["name"]
 
         if done?
-          unsubscribe(runner_ch)
+          remove_runner(runner_ch)
           res = { event: "done" }
         else
-          subscribe(runner_ch) unless runners[runner_ch]
+          add_runner(runner_ch) unless runners[runner_ch]
           runners[runner_ch] = Time.now
           res = next_block
         end
 
-        publish(runner_ch, res)
+        d_emit(runner_ch, res)
       end
 
       start
     end
 
-    def subscribe(runner_ch)
-      puts "##{runner_ch} subscribed (#{runners.length + 1} runners)"
+    def add_runner(ch)
+      puts "##{ch} subscribed (#{runners.length + 1} runners)"
     end
 
-    def unsubscribe(runner_ch)
-      runners.delete(runner_ch)
-      puts "##{runner_ch} unsubscribed (#{runners.length} runners)"
+    def remove_runner(ch)
+      runners.delete(ch)
+      puts "##{ch} unsubscribed (#{runners.length} runners)"
       stop if runners.empty?
     end
 

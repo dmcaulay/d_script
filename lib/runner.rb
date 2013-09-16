@@ -26,6 +26,10 @@ module DScript
       load script
     end
 
+    def ready
+      d_emit(master_ch, event: "ready", name: @name)
+    end
+
     def run(script, output_file)
       # init
       @script = script
@@ -33,9 +37,12 @@ module DScript
 
       load_script
 
+      on :started do
+        ready
+      end
+
       on "next_block" do |block|
         handle_block(block)
-        publish(master_ch, event: "ready", name: @name)
       end
 
       on "done" do 
@@ -52,6 +59,7 @@ module DScript
         else
           CurrentDScript.run(block["start_id"], block["end_id"])
         end
+        ready
       rescue Exception => e
         puts "error running #{block}"
         puts e.inspect
