@@ -1,5 +1,5 @@
 module DScript
-  class Status < DScript::Base
+  class Status < Base
     def run
       on :started do
         d_emit(master_ch, event: "status")
