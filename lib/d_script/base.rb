@@ -1,5 +1,3 @@
-require "d_emitter"
-
 module DScript
   class Base
     include DEmitter
