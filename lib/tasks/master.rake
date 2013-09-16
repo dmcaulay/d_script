@@ -62,7 +62,7 @@ namespace :d_script do
           runner_ch = data["name"]
 
           if done.call
-            unsubscribe(runner_ch)
+            unsubscribe.call(runner_ch)
             res = "done"
           else
             runners[runner_ch] = Time.now
