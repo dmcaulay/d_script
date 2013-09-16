@@ -1,5 +1,3 @@
-require "base"
-
 module DScript
   class Runner < Base
     attr_accessor :script, :output

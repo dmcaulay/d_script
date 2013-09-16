@@ -1,4 +1,6 @@
 require "d_script/version"
+
+require "base"
 require "master"
 require "runner"
 require "status"

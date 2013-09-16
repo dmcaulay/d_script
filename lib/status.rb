@@ -1,5 +1,3 @@
-require "base"
-
 module DScript
   class Status < Base
     def run
