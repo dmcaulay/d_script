@@ -43,6 +43,7 @@ namespace :d_script do
       end
 
       on.message do |ch, msg|
+        puts "received #{msg}"
         if msg == "done"
           sub_redis.unsubscribe(runner_ch)
         else
