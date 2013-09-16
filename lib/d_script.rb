@@ -1,6 +1,6 @@
 require "d_script/version"
-require "event_emitter"
-require "d_emitter"
+require "master"
+# require "runner"
 
 module DScript
   require "d_script/railtie" if defined?(Rails)

@@ -1,3 +1,4 @@
+require 'event_emitter'
 require 'json'
 require 'redis'
 
