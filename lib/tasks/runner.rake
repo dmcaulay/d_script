@@ -1,12 +1,11 @@
 namespace :d_script do
-  task :runner, [ :name, :output_file ] => [ :environment ] do |t, args|
+  task :runner, [ :name ] => [ :environment ] do |t, args|
     name = args[:name]
-    output_file = args[:output_file]
 
-    puts "d_script:runner started with name=#{name} output_file=#{output_file}"
+    puts "d_script:runner started with name=#{name}"
 
     runner = DScript::Runner.new(name, REDIS_SETTINGS)
-    runner.run(output_file)
+    runner.run
 
     puts "done"
   end

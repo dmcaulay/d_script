@@ -1,9 +1,10 @@
 module DScript
   class Runner < Base
-    attr_accessor :script, :output
+    attr_accessor :script, :output, :id
 
     def name
-      @name ||= base_name + '-runner-' + pub_redis.incr(base_name).to_s
+      @id = pub_redis.incr(base_name).to_s
+      @name ||= base_name + '-runner-' + id
     end
 
     def load_script
@@ -14,9 +15,9 @@ module DScript
       d_emit(master_ch, event: "ready", name: name)
     end
 
-    def run(output_file)
+    def run
       # init
-      @output = File.open(output_file, 'w') if output_file
+      @output = File.open("#{name}-#{id}.txt", 'w')
 
       on :started do
         d_emit(master_ch, event: "register", name: name)
@@ -32,8 +33,8 @@ module DScript
         handle_block(block)
       end
 
-      on "done" do 
-        stop 
+      on "done" do
+        stop
       end
 
       start
@@ -41,11 +42,8 @@ module DScript
 
     def handle_block(block)
       begin
-        if output
-          CurrentDScript.run(block["start_id"], block["end_id"], output)
-        else
-          CurrentDScript.run(block["start_id"], block["end_id"])
-        end
+        CurrentDScript.run(block["start_id"], block["end_id"], output)
+        output.flush
         ready
       rescue Exception => e
         puts "error running #{block}"
