@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+require 'd_script'
+require 'slop'
+
+opts = Slop.parse do
+  on :n, :name=, 'batch name'
+  on :s, :start_id=, 'start id', as: Integer
+  on :e, :end_id=, 'end id', as: Integer
+  on :S, :block_size=, 'block size', as: Integer
+  on :r, :redis=, 'redis url'
+end.to_hash
+
+script = ARGV[0]
+name = opts[:name]
+start_id = opts[:start_id]
+end_id = opts[:end_id]
+block_size = opts[:block_size]
+redis_settings = { url: opts[:redis], db: 0, timeout: 0, driver: :ruby}
+
+puts "d_script:master started with name=#{name} script=#{script} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size}"
+
+runner = DScript::Master.new(name, redis_settings)
+runner.run(script, start_id, end_id, block_size)
+
+puts "done"

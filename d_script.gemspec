@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
     spec.add_development_dependency dep
   end
 
-  ["hiredis", "redis"].each do |dep|
+  ["redis", "slop"].each do |dep|
     spec.add_runtime_dependency dep
   end
 end
