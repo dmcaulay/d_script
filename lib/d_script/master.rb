@@ -18,6 +18,11 @@ module DScript
       { event: "next_block", start_id: current_id, end_id: next_end_id }
     end
 
+    # events
+    on :register, :register_slave
+    on :ready, :slave_ready
+    on :status, :print_status
+
     def run(script, start_id, end_id, block_size)
       # init
       @start_id = start_id
@@ -27,43 +32,36 @@ module DScript
       @slaves = {}
       @start_time = Time.now
 
-      on "register" do |data|
-        slave_ch = data["name"]
-        d_emit(slave_ch, event: "registered", script: script)
-      end
-
-      on "ready" do |data|
-        slave_ch = data["name"]
-
-        if done?
-          remove_slave(slave_ch)
-          res = data.merge({ event: "done" })
-        else
-          add_slave(slave_ch) unless slaves[slave_ch]
-          slaves[slave_ch] = Time.now
-          res = data.merge(next_block)
-        end
-
-        d_emit(slave_ch, res)
-      end
-
-      on "status" do
-        print_status
-      end
-
       start
 
+      # finished
       puts "total time: #{Time.now - start_time}"
     end
 
-    def add_slave(ch)
-      puts "##{ch} subscribed (#{slaves.length + 1} slaves)"
+    def register_slave(data)
+      slave_ch = data["name"]
+      puts "##{slave_ch} registered (#{slaves.length + 1} slaves)"
+      d_emit(slave_ch, event: "registered", script: script)
     end
 
-    def remove_slave(ch)
+    def unregister_slave(ch)
       slaves.delete(ch)
       puts "##{ch} unsubscribed (#{slaves.length} slaves)"
       stop if slaves.empty?
+    end
+
+    def slave_ready(data)
+      slave_ch = data["name"]
+
+      if done?
+        unregister_slave(slave_ch)
+        res = data.merge({ event: "done" })
+      else
+        slaves[slave_ch] = Time.now
+        res = data.merge(next_block)
+      end
+
+      d_emit(slave_ch, res)
     end
 
     def print_status

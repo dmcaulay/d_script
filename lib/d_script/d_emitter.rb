@@ -1,11 +1,8 @@
-require 'd_script/event_emitter'
 require 'json'
 require 'redis'
 
 module DScript
   module DEmitter
-    include EventEmitter
-
     def start
       sub_redis.subscribe(name) do |ev|
         ev.subscribe do |ch, subscriptions|

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DScript::DEmitter do
   let(:settings) do
-    { driver: "hiredis", url: "redis://localhost:6379", db: 0, timeout: 5 }
+    { driver: "ruby", url: "redis://localhost:6379", db: 0, timeout: 5 }
   end
   let(:emitter) { DEmitterTest.new("test", settings) }
 
@@ -20,12 +20,12 @@ describe DScript::DEmitter do
   end
 
   class DEmitterTest
+    include DScript::EventEmitter
     include DScript::DEmitter
 
-    attr_accessor :events, :name, :pub_redis, :sub_redis
+    attr_accessor :name, :pub_redis, :sub_redis
 
     def initialize(name, settings)
-      @events = {}
       @name = name
       @pub_redis = Redis.new(settings)
       @sub_redis = Redis.new(settings)

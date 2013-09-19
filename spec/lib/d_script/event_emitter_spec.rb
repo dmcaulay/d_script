@@ -7,44 +7,39 @@ describe DScript::EventEmitter do
     emitter.on(:test_ev) { @called = true }
   end
 
-  describe "on" do
-    it "adds an event" do
-      emitter.count.should == 1
-    end
-
+  describe "#on" do
     it "calls the method on emit" do
       emitter.emit(:test_ev)
       @called.should be_true
     end
   end
 
-  describe "emit" do
+  describe "#emit" do
     it "accepts data" do
-      emitter.on(:with_data) { |data| @called = data }
+      emitter.on(:with_data) { |data| @called_sym = data }
+      emitter.on("with_data") { |data| @called_s = data }
       emitter.emit(:with_data, "test-data")
-      @called.should == "test-data"
+      @called_sym.should == "test-data"
+      @called_s.should == "test-data"
     end
   end
 
-  describe "remove" do
-    it "removes an event" do
-      emitter.remove(:test_ev)
-      emitter.count.should == 0
-    end
-
-    it "no longer calls the method" do
-      emitter.remove(:test_ev)
-      emitter.emit(:test_ev)
-      @called.should be_false
+  describe "on" do
+    it "allows you to call class events" do
+      emitter.emit(:class_ev)
+      emitter.called_class_ev.should be_true
     end
   end
 
   class Emitter
     include DScript::EventEmitter
-    attr_accessor :events
 
-    def initialize
-      @events = {}
+    attr_accessor :called_class_ev
+
+    on :class_ev, :class_ev
+
+    def class_ev
+      @called_class_ev = true
     end
   end
 end

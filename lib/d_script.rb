@@ -1,5 +1,8 @@
 require "d_script/version"
 
+require 'd_script/event_emitter'
+require 'd_script/d_emitter'
+
 require "d_script/base"
 require "d_script/master"
 require "d_script/runner"
