@@ -4,15 +4,17 @@ module DScript
 
     def name
       @id = pub_redis.incr(slave_ch).to_s
-      @name ||= slave_ch(id)
+      @name ||= ch_name('slave', id)
     end
 
     def done?
       @done || num_runners < runners.length
     end
 
-    # master events
+    # d_emitter events
     on :started, :register
+
+    # master events
     on :registered, :set_script
     on :next_block, :next_block
     on :done, :master_done

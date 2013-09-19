@@ -24,17 +24,25 @@ module DScript
 
     def next_cmd
       # parse cmd
-      cmd, id = $stdin.gets.chomp, nil
+      cmd, id, args = $stdin.gets.chomp, false, false
       if /(\w+) (\d+)/.match(cmd)
         cmd, id = $1, $2
+      else if /(\w+) (\d+) (.*)$/.match(cmd)
+        cmd, id, args = $1, $2, $3
       end
 
       # handle cmd
       case cmd
       when "status"
-        d_emit(master_ch, event: "status")
-      when "load_script"
-        d_emit(ch_name("runner", id), event: "load_script")
+        unless id
+          d_emit(master_ch, event: "status")
+        else
+          d_emit(ch_name("slave", id), event: "status")
+        end
+      when "reload"
+        d_emit(ch_name("runner", id), event: "reload")
+      when "num_runners"
+        d_emit(ch_name("slave", id), event: "num_runners", num_runners: args.to_i)
       when "exit"
         stop
       end

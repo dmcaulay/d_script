@@ -7,8 +7,10 @@ module DScript
       @name ||= ch_name('runner', id)
     end
 
-    # slave events
+    # d_emitter events
     on :started, :register
+
+    # slave events
     on :registered, :set_script
     on :next_block, :next_block
     on :done, :stop
