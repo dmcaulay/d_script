@@ -7,10 +7,9 @@ module DScript
     # d_emitter
     attr_accessor :events, :pub_redis, :sub_redis, :base_name
 
-    def initialize(name, settings)
+    def initialize(name, opts)
       @events = {}
-      settings[:timeout] = 0
-      settings[:driver] = :ruby
+      settings = { url: opts[:redis], db: 0, timeout: 0, driver: :ruby}
       @pub_redis = Redis.new(settings)
       @sub_redis = Redis.new(settings)
       @base_name = name
