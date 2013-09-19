@@ -1,6 +1,6 @@
 module DScript
   class Master < Base
-    attr_accessor :start_id, :end_id, :block_size, :current_id, :slaves, :start_time
+    attr_accessor :script, :start_id, :end_id, :block_size, :current_id, :slaves, :start_time
 
     def name
       master_ch
@@ -25,6 +25,7 @@ module DScript
 
     def run(script, start_id, end_id, block_size)
       # init
+      @script = script
       @start_id = start_id
       @end_id = end_id
       @block_size = block_size
