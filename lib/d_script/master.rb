@@ -80,7 +80,7 @@ module DScript
         status << "\n#{k} = #{v}"
       end
       puts status
-      d_emit("#{base_name}-status", event: "status", status: status)
+      d_emit(console_ch, event: "status", status: status)
     end
   end
 end

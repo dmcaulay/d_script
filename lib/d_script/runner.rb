@@ -4,7 +4,7 @@ module DScript
 
     def name
       @id = pub_redis.incr(base_name).to_s
-      @name ||= base_name + '-runner-' + id
+      @name ||= runner_ch(id)
     end
 
     def load_script

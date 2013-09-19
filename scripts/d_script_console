@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+require 'd_script'
+require 'slop'
+
+opts = Slop.parse do
+  on :n, :name=, 'batch name'
+  on :r, :redis=, 'redis url'
+end.to_hash
+
+script = ARGV[0]
+name = opts[:name]
+redis_settings = { url: opts[:redis] }
+
+puts "d_script:console started with name=#{name}"
+
+console = DScript::Console.new(name, redis_settings)
+console.run
+
+puts "done"

@@ -16,7 +16,15 @@ module DScript
     end
 
     def master_ch
-      @base_name + '-master'
+      base_name + '-master'
+    end
+
+    def runner_ch(id)
+      base_name + '-runner-' + id
+    end
+
+    def console_ch
+      base_name + '-console'
     end
   end
 end

@@ -6,8 +6,6 @@ module DScript
     railtie_name :d_script
 
     rake_tasks do
-      load 'tasks/master.rake'
-      load 'tasks/status.rake'
       load 'tasks/runner.rake'
     end
   end
