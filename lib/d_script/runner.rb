@@ -22,7 +22,7 @@ module DScript
       @output = File.open("#{name}-#{id}.txt", 'w')
       @slave_ch = slave_ch
 
-      on :done { |ignored| stop }
+      on(:done){ |ignored| stop }
 
       start
 
