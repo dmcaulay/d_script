@@ -7,7 +7,6 @@ opts = Slop.parse do
   on :r, :redis=, 'redis url'
 end.to_hash
 
-script = ARGV[0]
 name = opts[:name]
 redis_settings = { url: opts[:redis] || "redis://localhost:6379" }
 
