@@ -4,7 +4,7 @@ require 'slop'
 
 opts = Slop.parse do
   on :n, :name=, 'batch name'
-  on :N, :num_runners=, 'batch name'
+  on :N, :num_runners=, 'number of runners to start', as: Integer
   on :e, :env=, 'environment'
   on :r, :redis=, 'redis url'
 end.to_hash
