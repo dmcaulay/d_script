@@ -64,7 +64,7 @@ module DScript
       d_emit(slave_ch, res)
     end
 
-    def print_status
+    def print_status(data)
       status = ""
       percent_complete = (current_id.to_f - start_id)/(end_id - start_id)
       run_time = Time.now - start_time

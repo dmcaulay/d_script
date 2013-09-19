@@ -98,7 +98,7 @@ module DScript
       start_runners
     end
 
-    def print_status
+    def print_status(data)
       status = ""
       runners.each do |k, v|
         status << "\n#{k} = #{v}"

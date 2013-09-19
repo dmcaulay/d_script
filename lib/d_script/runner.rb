@@ -13,7 +13,6 @@ module DScript
     # slave events
     on :registered, :set_script
     on :next_block, :next_block
-    on :done, :stop
 
     # console events
     on :reload, :reload
@@ -22,6 +21,8 @@ module DScript
       # init
       @output = File.open("#{name}-#{id}.txt", 'w')
       @slave_ch = slave_ch
+
+      on :done { |ignored| stop }
 
       start
 
