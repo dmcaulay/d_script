@@ -3,7 +3,7 @@ module DScript
     attr_accessor :script, :runners, :num_runners, :env
 
     def name
-      @id = pub_redis.incr(slave_ch).to_s
+      @id = pub_redis.incr(ch_name('slave')).to_s
       @name ||= ch_name('slave', id)
     end
 
