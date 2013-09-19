@@ -9,7 +9,7 @@ end.to_hash
 
 script = ARGV[0]
 name = opts[:name]
-redis_settings = { url: opts[:redis] }
+redis_settings = { url: opts[:redis] || "redis://localhost:6379" }
 
 puts "d_script:console started with name=#{name}"
 

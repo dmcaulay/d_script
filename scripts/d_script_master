@@ -15,7 +15,7 @@ name = opts[:name]
 start_id = opts[:start_id]
 end_id = opts[:end_id]
 block_size = opts[:block_size]
-redis_settings = { url: opts[:redis] }
+redis_settings = { url: opts[:redis] || "redis://localhost:6379" }
 
 puts "d_script:master started with name=#{name} script=#{script} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size}"
 
