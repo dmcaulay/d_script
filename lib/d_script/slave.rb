@@ -47,8 +47,8 @@ module DScript
     def start_runners
       num_to_start = num_runners - runners.length
       if num_to_start > 0
-        Range.new(1, num_to_start) do
-          spawn("RAILS_ENV=#{env} bundle exec rake 'd_script:runner[#{base_name},#{name}]'"
+        Range.new(1, num_to_start).each do
+          spawn("RAILS_ENV=#{env} bundle exec rake 'd_script:runner[#{base_name},#{name}]'")
         end
       end
     end
