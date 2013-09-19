@@ -16,15 +16,19 @@ module DScript
     end
 
     def master_ch
-      base_name + '-master'
-    end
-
-    def runner_ch(id)
-      base_name + '-runner-' + id
+      ch_name('master')
     end
 
     def console_ch
-      base_name + '-console'
+      ch_name('console')
+    end
+
+    def ch_name(name, id = false)
+      if id
+        "#{base_name}-#{name}-#{id}"
+      else
+        "#{base_name}-#{name}"
+      end
     end
   end
 end

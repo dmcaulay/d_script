@@ -1,10 +1,10 @@
 module DScript
   class Runner < Base
-    attr_accessor :script, :output, :id
+    attr_accessor :script, :output, :id, :slave_ch, :block
 
     def name
-      @id = pub_redis.incr(base_name).to_s
-      @name ||= runner_ch(id)
+      @id = pub_redis.incr(runner_ch).to_s
+      @name ||= ch_name('runner', id)
     end
 
     def load_script
@@ -12,15 +12,16 @@ module DScript
     end
 
     def ready
-      d_emit(master_ch, event: "ready", name: name)
+      d_emit(slave_ch, event: "ready", name: name)
     end
 
-    def run
+    def run(slave_ch)
       # init
       @output = File.open("#{name}-#{id}.txt", 'w')
+      @slave_ch = slave_ch
 
       on :started do
-        d_emit(master_ch, event: "register", name: name)
+        d_emit(slave_ch, event: "register", name: name)
       end
 
       on "registered" do |data|
@@ -29,8 +30,16 @@ module DScript
         ready
       end
 
-      on "next_block" do |block|
-        handle_block(block)
+      on "next_block" do |next_block|
+        block = next_block
+        output.puts "processing #{block}"
+        handle_block
+      end
+
+      on "load_script" do
+        d_emit(console_ch, event: "reloaded", name: name)
+        output.puts "restarting #{block}"
+        handle_block
       end
 
       on "done" do
@@ -38,19 +47,21 @@ module DScript
       end
 
       start
+
+      output.puts "processing complete"
     end
 
-    def handle_block(block)
+    def handle_block
       begin
         CurrentDScript.run(block["start_id"], block["end_id"], output)
-        output.flush
+        output.puts "finished #{block}"
         ready
       rescue Exception => e
-        puts "error running #{block}"
-        puts "#{e.class}: #{e.message}"
-        e.backtrace.each {|l| puts l }
-        until (eval($stdin.gets.chomp)) ; end
-        handle_block(block)
+        output.puts "error running #{block}"
+        output.puts "#{e.class}: #{e.message}"
+        e.backtrace.each {|l| output.puts l }
+      ensure
+        output.flush
       end
     end
   end

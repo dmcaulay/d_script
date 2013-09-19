@@ -1,6 +1,6 @@
 module DScript
   class Master < Base
-    attr_accessor :start_id, :end_id, :block_size, :current_id, :runners, :start_time
+    attr_accessor :start_id, :end_id, :block_size, :current_id, :slaves, :start_time
 
     def name
       master_ch
@@ -24,27 +24,27 @@ module DScript
       @end_id = end_id
       @block_size = block_size
       @current_id = start_id
-      @runners = {}
+      @slaves = {}
       @start_time = Time.now
 
       on "register" do |data|
-        runner_ch = data["name"]
-        d_emit(runner_ch, event: "registered", script: script)
+        slave_ch = data["name"]
+        d_emit(slave_ch, event: "registered", script: script)
       end
 
       on "ready" do |data|
-        runner_ch = data["name"]
+        slave_ch = data["name"]
 
         if done?
-          remove_runner(runner_ch)
-          res = { event: "done" }
+          remove_slave(slave_ch)
+          res = data.merge({ event: "done" })
         else
-          add_runner(runner_ch) unless runners[runner_ch]
-          runners[runner_ch] = Time.now
-          res = next_block
+          add_slave(slave_ch) unless slaves[slave_ch]
+          slaves[slave_ch] = Time.now
+          res = data.merge(next_block)
         end
 
-        d_emit(runner_ch, res)
+        d_emit(slave_ch, res)
       end
 
       on "status" do
@@ -56,14 +56,14 @@ module DScript
       puts "total time: #{Time.now - start_time}"
     end
 
-    def add_runner(ch)
-      puts "##{ch} subscribed (#{runners.length + 1} runners)"
+    def add_slave(ch)
+      puts "##{ch} subscribed (#{slaves.length + 1} slaves)"
     end
 
-    def remove_runner(ch)
-      runners.delete(ch)
-      puts "##{ch} unsubscribed (#{runners.length} runners)"
-      stop if runners.empty?
+    def remove_slave(ch)
+      slaves.delete(ch)
+      puts "##{ch} unsubscribed (#{slaves.length} slaves)"
+      stop if slaves.empty?
     end
 
     def print_status
@@ -74,9 +74,9 @@ module DScript
         prediction = run_time / percent_complete
         status << "percentage: #{percent_complete*100}% finish time: #{start_time + prediction}"
       else
-        status << "add runners to start processing ids"
+        status << "add slaves to start processing ids"
       end
-      runners.each do |k, v|
+      slaves.each do |k, v|
         status << "\n#{k} = #{v}"
       end
       puts status
