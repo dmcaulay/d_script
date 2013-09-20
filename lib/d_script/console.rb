@@ -15,7 +15,7 @@ module DScript
       end
 
       on "reloaded" do |data|
-        output.puts "reloaded #{data["name"]}"
+        puts "reloaded #{data["name"]}"
         next_cmd
       end
 
