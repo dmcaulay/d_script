@@ -9,7 +9,7 @@ module DScript
     def register_runner(data)
       runner_ch = data["name"]
       puts "##{runner_ch} registered (#{runners.length + 1} runners)"
-      d_emit(runner_ch, event: "registered", script: script)
+      d_emit(runner_ch, event: "registered", script: script, output_dir: output_dir)
     end
 
     def unregister_runner(ch)

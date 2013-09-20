@@ -20,10 +20,12 @@ describe DScript::Runner do
     let(:output) { double() }
 
     before(:each) do
-      File.should_receive(:open).with('test-runner-1.txt', 'w').and_return(output)
+      File.should_receive(:open).with('/home/bzanchet/test-runner-1.txt', 'w').and_return(output)
+      runner.should_receive(:load_script)
       runner.should_receive(:start)
       output.should_receive(:puts)
       output.should_receive(:close)
+      runner.set_script("script" => "test.rb", "output_dir" => "/home/bzanchet/")
       runner.run('test-master')
     end
 

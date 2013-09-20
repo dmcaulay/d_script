@@ -23,7 +23,6 @@ module DScript
 
     def run(master_ch)
       # init
-      @output = File.open("#{name}.txt", 'w')
       @master_ch = master_ch
 
       on(:done){ |_| stop }
@@ -50,6 +49,10 @@ module DScript
     def set_script(data)
       @script = data["script"]
       load_script
+
+      output_dir = data["output_dir"]
+      @output = File.open("#{output_dir}#{name}.txt", 'w')
+
       ready
     end
 

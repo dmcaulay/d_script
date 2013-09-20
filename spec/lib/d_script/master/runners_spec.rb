@@ -8,8 +8,9 @@ describe DScript::Runners do
 
   describe "#register_runner" do
     it "sends the script to the runner" do
-      master.should_receive(:d_emit).with("runner_name", event: "registered", script: "test.rb")
+      master.should_receive(:d_emit).with("runner_name", event: "registered", script: "test.rb", output_dir: "/home/bzanchet")
       master.script = "test.rb"
+      master.output_dir = "/home/bzanchet"
       master.register_runner("name" => "runner_name")
     end
   end
@@ -31,7 +32,7 @@ describe DScript::Runners do
   class TestMaster < DScript::Base
     include DScript::Runners
 
-    attr_accessor :script
+    attr_accessor :script, :output_dir
 
     def runners
       @runners ||= {}

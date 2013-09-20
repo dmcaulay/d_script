@@ -61,8 +61,9 @@ describe DScript::Slave do
   describe "#set_script" do
     it "sets the script" do
       slave.should_receive(:start_runners)
-      slave.set_script("script" => "test.rb")
+      slave.set_script("script" => "test.rb", "output_dir" => "/home/bzanchet/")
       slave.script.should == "test.rb"
+      slave.output_dir.should == "/home/bzanchet/"
     end
   end
 

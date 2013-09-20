@@ -4,7 +4,7 @@ module DScript
   class Slave < Base
     include Runners
 
-    attr_accessor :script, :runners, :num_runners, :env
+    attr_accessor :script, :output_dir, :runners, :num_runners, :env
 
     def name
       @id ||= pub_redis.incr(ch_name('slave')).to_s
@@ -52,6 +52,7 @@ module DScript
 
     def set_script(data)
       @script = data["script"]
+      @output_dir = data["output_dir"]
       start_runners
     end
 

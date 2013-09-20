@@ -46,7 +46,7 @@ describe DScript::Master do
   describe "#run" do
     before(:each) do
       master.should_receive(:start)
-      master.run('test.rb', 1, 100, 10)
+      master.run('test.rb', '/home/bzanchet', 1, 100, 10)
     end
 
     it "initializes the master" do

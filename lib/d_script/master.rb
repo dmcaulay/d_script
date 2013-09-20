@@ -4,7 +4,7 @@ module DScript
   class Master < Base
     include Runners
 
-    attr_accessor :script, :start_id, :end_id, :block_size, :current_id, :runners, :start_time
+    attr_accessor :script, :output_dir, :start_id, :end_id, :block_size, :current_id, :runners, :start_time
 
     def name
       ch_name('master')
@@ -30,9 +30,10 @@ module DScript
     on :ready, :runner_ready
     on :status, :print_status
 
-    def run(script, start_id, end_id, block_size)
+    def run(script, output_dir, start_id, end_id, block_size)
       # init
       @script = script
+      @output_dir = output_dir
       @start_id = start_id
       @end_id = end_id
       @block_size = block_size

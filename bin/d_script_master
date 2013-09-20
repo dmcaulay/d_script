@@ -8,6 +8,7 @@ opts = Slop.parse do
   on :e, :end_id=, 'end id', as: Integer
   on :S, :block_size=, 'block size', as: Integer
   on :r, :redis=, 'redis url'
+  on :o, :output=, 'output_directory'
 end.to_hash
 
 script = ARGV[0]
@@ -16,10 +17,11 @@ start_id = opts[:start_id]
 end_id = opts[:end_id]
 block_size = opts[:block_size]
 redis_settings = { url: opts[:redis] || "redis://localhost:6379" }
+output = opts[:output]
 
-puts "d_script:master started with name=#{name} script=#{script} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size}"
+puts "d_script:master started with name=#{name} script=#{script} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size} output=#{output}"
 
 master = DScript::Master.new(name, redis_settings)
-master.run(script, start_id, end_id, block_size)
+master.run(script, output, start_id, end_id, block_size)
 
 puts "done"
