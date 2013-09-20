@@ -1,9 +1,17 @@
+require 'd_script/master/runners'
+
 module DScript
   class Master < Base
-    attr_accessor :script, :start_id, :end_id, :block_size, :current_id, :slaves, :start_time
+    include Runners
+
+    attr_accessor :script, :start_id, :end_id, :block_size, :current_id, :runners, :start_time
 
     def name
-      master_ch
+      ch_name('master')
+    end
+
+    def console_ch
+      ch_name('console')
     end
 
     def done?
@@ -19,8 +27,7 @@ module DScript
     end
 
     # events
-    on :register, :register_slave
-    on :ready, :slave_ready
+    on :ready, :runner_ready
     on :status, :print_status
 
     def run(script, start_id, end_id, block_size)
@@ -30,7 +37,7 @@ module DScript
       @end_id = end_id
       @block_size = block_size
       @current_id = start_id
-      @slaves = {}
+      @runners = {}
       @start_time = Time.now
 
       start
@@ -39,30 +46,13 @@ module DScript
       puts "total time: #{Time.now - start_time}"
     end
 
-    def register_slave(data)
-      slave_ch = data["name"]
-      puts "##{slave_ch} registered (#{slaves.length + 1} slaves)"
-      d_emit(slave_ch, event: "registered", script: script)
-    end
+    def runner_ready(data)
+      runner_ch = data["name"]
+      update_runner(runner_ch)
 
-    def unregister_slave(ch)
-      slaves.delete(ch)
-      puts "##{ch} unsubscribed (#{slaves.length} slaves)"
-      stop if slaves.empty?
-    end
+      res =  done? ? data.merge(event: "done") : data.merge(next_block)
 
-    def slave_ready(data)
-      slave_ch = data["name"]
-
-      if done?
-        unregister_slave(slave_ch)
-        res = data.merge({ event: "done" })
-      else
-        slaves[slave_ch] = Time.now
-        res = data.merge(next_block)
-      end
-
-      d_emit(slave_ch, res)
+      d_emit(runner_ch, res)
     end
 
     def print_status(data)
@@ -73,11 +63,9 @@ module DScript
         prediction = run_time / percent_complete
         status << "percentage: #{percent_complete*100}% finish time: #{start_time + prediction}"
       else
-        status << "add slaves to start processing ids"
+        status << "add runners to start processing ids"
       end
-      slaves.each do |k, v|
-        status << "\n#{k} = #{v}"
-      end
+      status << runners_status
       puts status
       d_emit(console_ch, event: "status", status: status)
     end

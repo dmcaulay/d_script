@@ -1,6 +1,6 @@
 module DScript
   class Runner < Base
-    attr_accessor :script, :output, :id, :slave_ch, :block
+    attr_accessor :script, :output, :id, :master_ch, :block
 
     def name
       @id = pub_redis.incr(ch_name('runner')).to_s
@@ -10,24 +10,25 @@ module DScript
     # d_emitter events
     on :started, :register
 
-    # slave events
+    # master events
     on :registered, :set_script
     on :next_block, :next_block
 
     # console events
     on :reload, :reload
 
-    def run(slave_ch)
+    def run(master_ch)
       # init
-      @output = File.open("#{name}-#{id}.txt", 'w')
-      @slave_ch = slave_ch
+      @output = File.open("#{name}.txt", 'w')
+      @master_ch = master_ch
 
-      on(:done){ |ignored| stop }
+      on(:done){ |_| stop }
 
       start
 
       # finished
       output.puts "processing complete"
+      output.close
     end
 
     def load_script
@@ -35,7 +36,11 @@ module DScript
     end
 
     def register
-      d_emit(slave_ch, event: "register", name: name)
+      d_emit(master_ch, event: "register", name: name)
+    end
+
+    def ready
+      d_emit(master_ch, event: "ready", name: name)
     end
 
     def set_script(data)
@@ -44,19 +49,15 @@ module DScript
       ready
     end
 
-    def ready
-      d_emit(slave_ch, event: "ready", name: name)
-    end
-
-    def reload
+    def reload(data)
       output.puts "reloading #{block}"
       load_script
       handle_block
       d_emit(console_ch, event: "reloaded", name: name)
     end
 
-    def next_block
-      block = next_block
+    def next_block(data)
+      @block = data
       output.puts "processing #{block}"
       handle_block
     end

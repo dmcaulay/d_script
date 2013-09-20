@@ -14,14 +14,6 @@ module DScript
       @base_name = name
     end
 
-    def master_ch
-      ch_name('master')
-    end
-
-    def console_ch
-      ch_name('console')
-    end
-
     def ch_name(name, id = false)
       if id
         "#{base_name}-#{name}-#{id}"

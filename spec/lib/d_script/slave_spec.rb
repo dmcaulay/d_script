@@ -4,7 +4,7 @@ describe DScript::Slave do
   let(:settings) do
     { driver: "ruby", url: "redis://localhost:6379", db: 0, timeout: 5 }
   end
-  let(:slave) { slave = DScript::Slave.new("test", settings) }
+  let(:slave) { DScript::Slave.new("test", settings) }
 
   before(:each) do
     slave.runners = {}
@@ -99,7 +99,7 @@ describe DScript::Slave do
   describe "#runner_ready" do
     describe "when done? is true" do
       it "sends done to the runner channel" do
-        slave.should_receive(:done?).and_return(true)
+        slave.should_receive(:done?).twice.and_return(true)
         slave.should_receive(:unregister_runner).with("runner_name")
         slave.should_receive(:d_emit).with("runner_name", event: "done")
         slave.runner_ready("name" => "runner_name")
@@ -108,27 +108,10 @@ describe DScript::Slave do
 
     describe "when done? is false" do
       it "tells master it is ready" do
-        slave.should_receive(:done?).and_return(false)
+        slave.should_receive(:done?).twice.and_return(false)
         slave.should_receive(:d_emit).with("test-master", event: "ready", name: slave.name, runner_ch: "runner_name")
         slave.runner_ready("name" => "runner_name")
       end
-    end
-  end
-
-  describe "#register_runner" do
-    it "sends the script to the runner" do
-      slave.should_receive(:d_emit).with("runner_name", event: "registered", script: "test.rb")
-      slave.script = "test.rb"
-      slave.register_runner("name" => "runner_name")
-    end
-  end
-
-  describe "#unregister_runner" do
-    it "deletes the runner" do
-      slave.should_receive(:stop)
-      slave.runners = { "runner_name" => Time.now }
-      slave.unregister_runner("runner_name")
-      slave.runners.should be_empty
     end
   end
 

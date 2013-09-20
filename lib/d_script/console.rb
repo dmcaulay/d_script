@@ -1,7 +1,7 @@
 module DScript
   class Console < Base
     def name
-      console_ch
+      ch_name('console')
     end
 
     def run
@@ -35,7 +35,7 @@ module DScript
       case cmd
       when "status"
         unless id
-          d_emit(master_ch, event: "status")
+          d_emit(ch_name("master"), event: "status")
         else
           d_emit(ch_name("slave", id), event: "status")
         end

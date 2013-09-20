@@ -42,4 +42,42 @@ describe DScript::Master do
       master.next_block.should == { event: "next_block", start_id: 10, end_id: 22 }
     end
   end
+
+  describe "#run" do
+    before(:each) do
+      master.should_receive(:start)
+      master.run('test.rb', 1, 100, 10)
+    end
+
+    it "initializes the master" do
+      master.script.should == 'test.rb'
+      master.start_id.should == 1
+      master.end_id.should == 100
+      master.block_size.should == 10
+      master.runners.should == {}
+    end
+  end
+
+  describe "#runner_ready" do
+    describe "when done? is true" do
+      it "sends done to the runner channel" do
+        master.should_receive(:done?).twice.and_return(true)
+        master.should_receive(:unregister_runner).with("runner_name")
+        master.should_receive(:d_emit).with("runner_name", event: "done", "name" => "runner_name")
+        master.runner_ready("name" => "runner_name")
+      end
+    end
+
+    describe "when done? is false" do
+      it "emits the next_block" do
+        master.runners = {}
+        master.current_id = 10
+        master.block_size = 12
+        master.should_receive(:done?).twice.and_return(false)
+        master.should_receive(:d_emit)
+          .with("runner_name", event: "next_block", start_id: 10, end_id: 22, "name" => "runner_name")
+        master.runner_ready("name" => "runner_name")
+      end
+    end
+  end
 end

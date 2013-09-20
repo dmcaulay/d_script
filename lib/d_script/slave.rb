@@ -1,10 +1,18 @@
+require 'd_script/master/runners'
+
 module DScript
   class Slave < Base
+    include Runners
+
     attr_accessor :script, :runners, :num_runners, :env
 
     def name
       id = pub_redis.incr(ch_name('slave')).to_s
       @name ||= ch_name('slave', id)
+    end
+
+    def master_ch
+      ch_name('master')
     end
 
     def done?
@@ -20,7 +28,6 @@ module DScript
     on :done, :master_done
 
     # runner events
-    on :register, :register_runner
     on :ready, :runner_ready
 
     # console events
@@ -69,28 +76,19 @@ module DScript
       d_emit(master_ch, event: "ready", name: name, runner_ch: runner_ch)
     end
 
+    def done(runner_ch)
+      d_emit(runner_ch, event: "done")
+    end
+
     def runner_ready(data)
       runner_ch = data["name"]
+      update_runner(runner_ch)
 
       if done?
-        unregister_runner(runner_ch)
-        d_emit(runner_ch, event: "done")
+        done(runner_ch)
       else
-        runners[runner_ch] = Time.now
         ready(runner_ch)
       end
-    end
-
-    def register_runner(data)
-      runner_ch = data["name"]
-      puts "##{runner_ch} subscribed (#{runners.length + 1} runners)"
-      d_emit(runner_ch, event: "registered", script: script)
-    end
-
-    def unregister_runner(ch)
-      runners.delete(ch)
-      puts "##{ch} unsubscribed (#{runners.length} runners)"
-      stop if runners.empty?
     end
 
     def set_num_runners(data)
@@ -99,10 +97,7 @@ module DScript
     end
 
     def print_status(data)
-      status = ""
-      runners.each do |k, v|
-        status << "\n#{k} = #{v}"
-      end
+      status = runners_status
       status = "no registered runners" if status.empty?
       puts status
       d_emit(console_ch, event: "status", status: status)
