@@ -61,7 +61,7 @@ describe DScript::Master do
   describe "#runner_ready" do
     describe "when done? is true" do
       it "sends done to the runner channel" do
-        master.should_receive(:done?).twice.and_return(true)
+        master.should_receive(:done?).and_return(true)
         master.should_receive(:unregister_runner).with("runner_name")
         master.should_receive(:d_emit).with("runner_name", event: "done", "name" => "runner_name")
         master.runner_ready("name" => "runner_name")
@@ -73,7 +73,7 @@ describe DScript::Master do
         master.runners = {}
         master.current_id = 10
         master.block_size = 12
-        master.should_receive(:done?).twice.and_return(false)
+        master.should_receive(:done?).and_return(false)
         master.should_receive(:d_emit)
           .with("runner_name", event: "next_block", start_id: 10, end_id: 22, "name" => "runner_name")
         master.runner_ready("name" => "runner_name")

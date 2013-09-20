@@ -87,11 +87,12 @@ module DScript
 
     def runner_ready(data)
       runner_ch = data["name"]
-      update_runner(runner_ch)
 
       if done?
+        unregister_runner(runner_ch)
         done(runner_ch)
       else
+        runners[runner_ch] = Time.now
         ready(runner_ch)
       end
     end

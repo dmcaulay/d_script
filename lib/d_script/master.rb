@@ -48,9 +48,14 @@ module DScript
 
     def runner_ready(data)
       runner_ch = data["name"]
-      update_runner(runner_ch)
 
-      res =  done? ? data.merge(event: "done") : data.merge(next_block)
+      if done?
+        unregister_runner(runner_ch)
+        res = data.merge(event: "done")
+      else
+        runners[runner_ch] = Time.now
+        res = data.merge(next_block)
+      end
 
       d_emit(runner_ch, res)
     end

@@ -18,14 +18,6 @@ module DScript
       stop if runners.empty?
     end
 
-    def update_runner(runner_ch)
-      if done?
-        unregister_runner(runner_ch)
-      else
-        runners[runner_ch] = Time.now
-      end
-    end
-
     def runners_status
       status = ""
       runners.each do |k, v|

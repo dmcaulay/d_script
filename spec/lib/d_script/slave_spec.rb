@@ -99,7 +99,7 @@ describe DScript::Slave do
   describe "#runner_ready" do
     describe "when done? is true" do
       it "sends done to the runner channel" do
-        slave.should_receive(:done?).twice.and_return(true)
+        slave.should_receive(:done?).and_return(true)
         slave.should_receive(:unregister_runner).with("runner_name")
         slave.should_receive(:d_emit).with("runner_name", event: "done")
         slave.runner_ready("name" => "runner_name")
@@ -108,7 +108,7 @@ describe DScript::Slave do
 
     describe "when done? is false" do
       it "tells master it is ready" do
-        slave.should_receive(:done?).twice.and_return(false)
+        slave.should_receive(:done?).and_return(false)
         slave.should_receive(:d_emit).with("test-master", event: "ready", name: slave.name, runner_ch: "runner_name")
         slave.runner_ready("name" => "runner_name")
       end
