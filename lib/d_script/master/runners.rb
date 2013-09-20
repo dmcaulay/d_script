@@ -2,7 +2,9 @@ module DScript
   module Runners
     include EventEmitter
 
-    on :register, :register_runner
+    def self.included(base)
+      base.on(:register, :register_runner)
+    end
 
     def register_runner(data)
       runner_ch = data["name"]
