@@ -8,7 +8,7 @@ module DScript
     attr_accessor :pub_redis, :sub_redis, :base_name
 
     def initialize(name, opts)
-      settings = { url: opts[:redis], db: 0, timeout: 0, driver: :ruby}
+      settings = { url: opts[:url], db: 0, timeout: 0, driver: :ruby}
       @pub_redis = Redis.new(settings)
       @sub_redis = Redis.new(settings)
       @base_name = name
