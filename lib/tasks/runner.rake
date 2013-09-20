@@ -1,11 +1,11 @@
 namespace :d_script do
-  task :runner, [ :name, :slave_ch ] => [ :environment ] do |t, args|
+  task :runner, [ :name, :master_ch ] => [ :environment ] do |t, args|
     name = args[:name]
-    slave_ch = args[:name]
+    master_ch = args[:master_ch]
 
-    puts "d_script:runner started with name=#{name} slave_ch=#{slave_ch}"
+    puts "d_script:runner started with name=#{name} master_ch=#{master_ch}"
 
     runner = DScript::Runner.new(name, REDIS_SETTINGS)
-    runner.run(slave_ch)
+    runner.run(master_ch)
   end
 end
