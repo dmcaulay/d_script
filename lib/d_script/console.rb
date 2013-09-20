@@ -45,6 +45,8 @@ module DScript
         d_emit(ch_name("slave", id), event: "num_runners", num_runners: args.to_i)
       when "exit"
         stop
+      else
+        puts "unknown cmd #{cmd}"
       end
     end
   end
