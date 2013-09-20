@@ -39,7 +39,7 @@ module DScript
       d_emit(master_ch, event: "register", name: name)
     end
 
-    def set_script
+    def set_script(data)
       @script = data["script"]
       start_runners
     end
@@ -55,7 +55,7 @@ module DScript
 
     def next_block(data)
       runner_ch = data["runner_ch"]
-      d_emit(runner_ch, next_block)
+      d_emit(runner_ch, data)
     end
 
     def master_done(data)
@@ -74,7 +74,7 @@ module DScript
 
       if done?
         unregister_runner(runner_ch)
-        d_emit(runner_ch, { event: "done" })
+        d_emit(runner_ch, event: "done")
       else
         runners[runner_ch] = Time.now
         ready(runner_ch)
@@ -94,7 +94,7 @@ module DScript
     end
 
     def set_num_runners(data)
-      num_runners = data["num_runners"]
+      @num_runners = data["num_runners"]
       start_runners
     end
 
