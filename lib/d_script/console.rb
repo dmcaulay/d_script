@@ -33,8 +33,6 @@ module DScript
         cmd = input
       end
 
-      puts "#{input}:#{cmd}"
-
       # handle cmd
       case cmd
       when "status"

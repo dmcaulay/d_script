@@ -7,6 +7,10 @@ module DScript
       @name ||= ch_name('runner', id)
     end
 
+    def console_ch
+      ch_name('console')
+    end
+
     # d_emitter events
     on :started, :register
 
