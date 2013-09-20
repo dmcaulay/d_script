@@ -15,6 +15,10 @@ module DScript
       ch_name('master')
     end
 
+    def console_ch
+      ch_name('console')
+    end
+
     def done?
       @done || num_runners < runners.length
     end

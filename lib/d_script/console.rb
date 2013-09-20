@@ -29,6 +29,8 @@ module DScript
         cmd, id, args = $1, $2, $3
       elsif /(\w+) (\d+)$/.match(input)
         cmd, id = $1, $2
+      else
+        cmd = input
       end
 
       puts "#{input}:#{cmd}"
