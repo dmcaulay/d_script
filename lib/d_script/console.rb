@@ -25,11 +25,13 @@ module DScript
     def next_cmd
       # parse cmd
       input, id, args = $stdin.gets.chomp, false, false
-      if /(\w+) (\d+)$/.match(input)
-        cmd, id = $1, $2
-      elsif /(\w+) (\d+) (.*)$/.match(input)
+      if /(\w+) (\d+) (.*)$/.match(input)
         cmd, id, args = $1, $2, $3
+      elsif /(\w+) (\d+)$/.match(input)
+        cmd, id = $1, $2
       end
+
+      puts "#{input}:#{cmd}"
 
       # handle cmd
       case cmd
