@@ -25,7 +25,7 @@ module DScript
     def next_cmd
       # parse cmd
       cmd, id, args = $stdin.gets.chomp, false, false
-      if /(\w+) (\d+)/.match(cmd)
+      if /(\w+) (\d+)$/.match(cmd)
         cmd, id = $1, $2
       elsif /(\w+) (\d+) (.*)$/.match(cmd)
         cmd, id, args = $1, $2, $3
