@@ -59,8 +59,8 @@ module DScript
     def reload(data)
       output.puts "reloading #{block}"
       load_script
-      handle_block
       d_emit(console_ch, event: "reloaded", name: name)
+      handle_block
     end
 
     def next_block(data)
