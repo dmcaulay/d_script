@@ -19,6 +19,11 @@ module DScript
         next_cmd
       end
 
+      on "runners_set" do |data|
+        puts "#{data["name"]} set runners"
+        next_cmd
+      end
+
       start
     end
 

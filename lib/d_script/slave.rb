@@ -102,6 +102,7 @@ module DScript
       @num_runners = data["num_runners"]
       puts "num runners set #{num_runners}"
       start_runners
+      d_emit(data["name"], event: "runners_set", name: name)
     end
 
     def print_status(data)
