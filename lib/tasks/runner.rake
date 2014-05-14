@@ -5,7 +5,7 @@ namespace :d_script do
 
     puts "d_script:runner started with name=#{name} master_ch=#{master_ch}"
 
-    runner = DScript::Runner.new(name, REDIS_SETTINGS)
+    runner = DScript::Runner.new(name, RedisConfig[:sidekiq])
     runner.run(master_ch)
   end
 end
