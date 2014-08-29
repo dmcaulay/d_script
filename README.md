@@ -1,6 +1,6 @@
 # DScript
 
-DScript allows you to load a script in multiple processes on multiple servers. DScript uses Redis to keep track of the script progress and to communicate to the script runners. When you run a script there are 3 different parts. The master, slaves and runners.
+DScript allows you to load a script a distribute the processing across multiple runners on multiple servers. DScript uses Redis to keep track of the script progress and to communicate to the script runners.
 
 ## Installation
 
@@ -17,6 +17,8 @@ Or install it yourself as:
     $ gem install d_script
 
 ## Usage
+
+When you run a script there are 3 different parts. The master, slaves and runners.
 
 ### The Master
 
