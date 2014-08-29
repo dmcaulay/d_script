@@ -1,6 +1,6 @@
 # DScript
 
-DScript allows you to load a script a distribute the processing across multiple runners on multiple servers. DScript uses Redis to keep track of the script progress and to communicate to the script runners.
+DScript allows you to load a script and distribute the processing across multiple runners on multiple servers. DScript uses Redis to keep track of the script progress and to communicate to the script runners.
 
 ## Installation
 
