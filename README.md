@@ -24,7 +24,7 @@ When you run a script there are 3 different parts. The master, slaves and runner
 
 The master process keeps track of the progress and distributes to the work to the slaves.
 
-```bash
+```
 $ d_script_master [SCRIPT_FILE] [OPTIONS]
 
 start the master process with the SCRIPT_FILE
@@ -50,7 +50,7 @@ $ bundle exec d_script_master script/long_script.rb -n long_script -s 0 -e 11000
 
 The slave processes communicate directly with the master and start n runners that process each block. You usually start one slave per server.
 
-```bash
+```
 $ d_script_slave [OPTIONS]
 
 -n, --name
@@ -89,7 +89,7 @@ end
 
 The console can be used to monitor the job, update the number of runners for a slave and reload the script on a runner.
 
-```bash
+```
 $ d_script_console [OPTIONS]
 
 -n, --name
@@ -102,7 +102,7 @@ $ bundle exec d_script_console -n long_script -r redis://localhost:6379
 
 The console runs the following commands.
 
-```bash
+```
 # get the status of the current job
 status
 
