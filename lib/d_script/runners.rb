@@ -1,7 +1,5 @@
 module DScript
   module Runners
-    include EventEmitter
-
     def self.included(base)
       base.on(:register, :register_runner)
     end
@@ -19,11 +17,9 @@ module DScript
     end
 
     def runners_status
-      status = ""
-      runners.each do |k, v|
+      runners.each_with_object("") do |k, v, status|
         status << "\n#{k} = #{v}"
       end
-      status
     end
   end
 end

@@ -21,6 +21,8 @@ module DScript
     # console events
     on :reload, :reload
 
+    on :done, :stop
+
     def run(master_ch)
       # init
       @master_ch = master_ch

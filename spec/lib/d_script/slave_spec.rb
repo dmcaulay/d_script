@@ -18,21 +18,8 @@ describe DScript::Slave do
   end
 
   describe "#done?" do
-    it "returns true if num_runners < runners.length" do
-      slave.runners = { test: 1, test_2: 2 }
-      slave.num_runners = 1
-      slave.should be_done
-    end
-
-    it "returns false if num_runners >= runners.length" do
-      slave.runners = {}
-      slave.num_runners = 1
-      slave.should_not be_done
-    end
-
     it "returns true if the master is done" do
       slave.should_receive(:stop)
-      slave.runners = {}
       slave.master_done({"runner_ch" => "test"})
       slave.should be_done
     end
@@ -41,7 +28,7 @@ describe DScript::Slave do
   describe "#run" do
     before(:each) do
       slave.should_receive(:start)
-      slave.run(1, 'test')
+      slave.run(num_runners: 1, env: 'test')
     end
 
     it "initializes the slave" do

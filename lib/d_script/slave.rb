@@ -1,5 +1,3 @@
-require 'd_script/master/runners'
-
 module DScript
   class Slave < Base
     include Runners
@@ -7,8 +5,7 @@ module DScript
     attr_accessor :script, :output_dir, :runners, :num_runners, :env
 
     def name
-      @id ||= pub_redis.incr(ch_name('slave')).to_s
-      @name ||= ch_name('slave', @id)
+      @name ||= ch_name('slave', _id)
     end
 
     def master_ch
@@ -20,10 +17,10 @@ module DScript
     end
 
     def done?
-      @done || num_runners < runners.length
+      @done
     end
 
-    # d_emitter events
+    # base events
     on :started, :register
 
     # master events
@@ -38,7 +35,7 @@ module DScript
     on :status, :print_status
     on :num_runners, :set_num_runners
 
-    def run(num_runners, env)
+    def run(num_runners:, env:)
       @runners = {}
       @num_runners = num_runners
       @env = env
@@ -46,10 +43,12 @@ module DScript
       start
     end
 
+    # on :started, :register
     def register
       d_emit(master_ch, event: "register", name: name)
     end
 
+    # on :registered, :set_script
     def set_script(data)
       @script = data["script"]
       @output_dir = data["output_dir"]
@@ -57,15 +56,13 @@ module DScript
     end
 
     def start_runners
-      num_to_start = num_runners - runners.length
-      if num_to_start > 0
-        Range.new(1, num_to_start).each do
-          puts "starting runner"
-          spawn("RAILS_ENV=#{env} bundle exec rake 'd_script:runner[#{base_name},#{name}]'")
-        end
+      (num_runners - runners.length).times do
+        puts "starting runner"
+        spawn("RAILS_ENV=#{env} bundle exec rake 'd_script:runner[#{base_name},#{name}]'")
       end
     end
 
+    # on :next_block, :next_block
     def next_block(data)
       runner_ch = data["runner_ch"]
       d_emit(runner_ch, data)
@@ -78,6 +75,7 @@ module DScript
       d_emit(runner_ch, { event: "done" })
     end
 
+    # on :ready, :runner_ready
     def ready(runner_ch)
       d_emit(master_ch, event: "ready", name: name, runner_ch: runner_ch)
     end
@@ -110,6 +108,10 @@ module DScript
       status = "no registered runners" if status.empty?
       puts status
       d_emit(console_ch, event: "status", status: status)
+    end
+
+    def _id
+      @_id ||= pub_redis.incr(ch_name('slave')).to_s
     end
   end
 end

@@ -2,21 +2,23 @@ require 'spec_helper'
 
 describe DScript::Master do
   let(:settings) do
-    { driver: "hiredis", url: "redis://localhost:6379", db: 0, timeout: 5 }
+    { driver: "ruby", url: "redis://localhost:6379", db: 0, timeout: 5 }
   end
   let(:master) { DScript::Master.new("test", settings) }
 
   describe "#done?" do
-    it "is true if current_id is greater than end_id" do
+    it "is true if current_id is greater than or equals to end_id" do
       master.current_id = 10
       master.end_id = 9
       master.should be_done
-    end
-
-    it "is true if current_id equals end_id" do
-      master.current_id = 10
       master.end_id = 10
       master.should be_done
+    end
+
+    it "is false if current_id < end_id" do
+      master.current_id = 9
+      master.end_id = 10
+      master.should_not be_done
     end
   end
 
@@ -46,7 +48,7 @@ describe DScript::Master do
   describe "#run" do
     before(:each) do
       master.should_receive(:start)
-      master.run('test.rb', '/home/bzanchet', 1, 100, 10)
+      master.run(script: 'test.rb', output_dir: '/home/bzanchet', start_id: 1, end_id: 100, block_size: 10)
     end
 
     it "initializes the master" do

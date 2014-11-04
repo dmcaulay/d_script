@@ -22,7 +22,7 @@ When you run a script there are 3 different parts. The master, slaves and runner
 
 ### The Master
 
-The master process keeps track of the progress and distributes to the work to the slaves.
+The master process keeps track of the progress and distributes the work to the slaves.
 
 ```
 $ d_script_master [SCRIPT_FILE] [OPTIONS]
