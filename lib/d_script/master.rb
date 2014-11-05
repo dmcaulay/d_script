@@ -1,8 +1,6 @@
 
 module DScript
   class Master < Base
-    include Runners
-
     attr_accessor :script, :output_dir, :start_id, :end_id,
                   :block_size, :current_id, :runners, :start_time
 
@@ -27,6 +25,7 @@ module DScript
     end
 
     # events
+    on :register, :register_runner
     on :ready, :runner_ready
     on :status, :print_status
 
@@ -60,6 +59,24 @@ module DScript
       end
 
       d_emit(runner_ch, res)
+    end
+
+    def register_runner(data)
+      runner_ch = data["name"]
+      puts "##{runner_ch} registered (#{runners.length + 1} runners)"
+      d_emit(runner_ch, event: "registered", script: script, output_dir: output_dir)
+    end
+
+    def unregister_runner(ch)
+      runners.delete(ch)
+      puts "##{ch} unsubscribed (#{runners.length} runners)"
+      stop if runners.empty?
+    end
+
+    def runners_status
+      runners.each_with_object("") do |k, v, status|
+        status << "\n#{k} = #{v}"
+      end
     end
 
     def print_status(data)

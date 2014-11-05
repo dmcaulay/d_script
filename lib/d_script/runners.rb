@@ -1,24 +1,11 @@
 module DScript
-  module Runners
-    def self.included(base)
-      base.on(:register, :register_runner)
-    end
+  class Runners
+    attr_accessor :num_runners, :env
 
-    def register_runner(data)
-      runner_ch = data["name"]
-      puts "##{runner_ch} registered (#{runners.length + 1} runners)"
-      d_emit(runner_ch, event: "registered", script: script, output_dir: output_dir)
-    end
-
-    def unregister_runner(ch)
-      runners.delete(ch)
-      puts "##{ch} unsubscribed (#{runners.length} runners)"
-      stop if runners.empty?
-    end
-
-    def runners_status
-      runners.each_with_object("") do |k, v, status|
-        status << "\n#{k} = #{v}"
+    def start(name:, redis_url:, num_runners:, env:)
+      num_runners.times do
+        puts "starting runner"
+        spawn("RAILS_ENV=#{env} bundle exec rake 'd_script:runner[#{name},#{redis_url}]'")
       end
     end
   end

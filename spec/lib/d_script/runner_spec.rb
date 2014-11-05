@@ -5,7 +5,7 @@ describe DScript::Runner do
     { driver: "ruby", url: "redis://localhost:6379", db: 0, timeout: 5 }
   end
   let(:runner) { DScript::Runner.new("test", settings) }
-  
+
   before(:each) do
     Redis.any_instance.should_receive(:incr).and_return(1)
   end
@@ -26,7 +26,7 @@ describe DScript::Runner do
       output.should_receive(:puts)
       output.should_receive(:close)
       runner.set_script("script" => "test.rb", "output_dir" => "/home/bzanchet/")
-      runner.run('test-master')
+      runner.run
     end
 
     it "initializes the slave" do

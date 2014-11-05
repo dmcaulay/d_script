@@ -1,10 +1,14 @@
 module DScript
   class Runner < Base
-    attr_accessor :script, :output, :id, :master_ch, :block
+    attr_accessor :script, :output, :master_ch, :_block
 
     def name
-      @id ||= pub_redis.incr(ch_name('runner')).to_s
-      @name ||= ch_name('runner', id)
+      @_id ||= pub_redis.incr(ch_name('runner')).to_s
+      @name ||= ch_name('runner', @_id)
+    end
+
+    def master_ch
+      ch_name('master')
     end
 
     def console_ch
@@ -23,21 +27,12 @@ module DScript
 
     on :done, :stop
 
-    def run(master_ch)
-      # init
-      @master_ch = master_ch
-
-      on(:done){ |_| stop }
-
+    def run
       start
 
       # finished
       output.puts "processing complete"
       output.close
-    end
-
-    def load_script
-      load script
     end
 
     def register
@@ -58,26 +53,30 @@ module DScript
       ready
     end
 
+    def load_script
+      load script
+    end
+
     def reload(data)
-      output.puts "reloading #{block}"
+      output.puts "reloading #{_block}"
       load_script
       d_emit(console_ch, event: "reloaded", name: name)
       handle_block
     end
 
     def next_block(data)
-      @block = data
-      output.puts "processing #{block}"
+      @_block = data
+      output.puts "processing #{_block}"
       handle_block
     end
 
     def handle_block
       begin
-        CurrentDScript.run(block["start_id"], block["end_id"], output)
-        output.puts "finished #{block}"
+        CurrentDScript.run(_block["start_id"], _block["end_id"], output)
+        output.puts "finished #{_block}"
         ready
       rescue Exception => e
-        output.puts "error running #{block}"
+        output.puts "error running #{_block}"
         output.puts "#{e.class}: #{e.message}"
         e.backtrace.each {|l| output.puts l }
       ensure
