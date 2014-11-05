@@ -48,26 +48,28 @@ module DScript
       load_script
 
       output_dir = data["output_dir"]
-      @output = File.open("#{output_dir}#{name}.txt", 'w')
+      @output = File.open(File.join(output_dir, "#{name}.txt"), 'w')
 
       ready
-    end
-
-    def load_script
-      load script
-    end
-
-    def reload(data)
-      output.puts "reloading #{_block}"
-      load_script
-      d_emit(console_ch, event: "reloaded", name: name)
-      handle_block
     end
 
     def next_block(data)
       @_block = data
       output.puts "processing #{_block}"
       handle_block
+    end
+
+    def reload(_)
+      output.puts "reloading #{_block}"
+      load_script
+      d_emit(console_ch, event: "reloaded", name: name)
+      handle_block
+    end
+
+    private
+
+    def load_script
+      load script
     end
 
     def handle_block
