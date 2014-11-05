@@ -1,24 +1,13 @@
 module DScript
   class Console < Base
 
-    on :started, proc do
-      next_cmd
-    end
+    on :started, proc { next_cmd }
 
-    on :status, proc do |data|
-      puts data["status"]
-      next_cmd
-    end
+    on :status, proc { |data| puts data["status"]; next_cmd }
 
-    on :reloaded, proc do |data|
-      puts "reloaded #{data["name"]}"
-      next_cmd
-    end
+    on :reloaded, proc { |data| puts "reloaded #{data["name"]}"; next_cmd }
 
-    on :runners_set, proc do |data|
-      puts "#{data["name"]} set runners"
-      next_cmd
-    end
+    on :runners_set, proc { |data| puts "#{data["name"]} set runners"; next_cmd }
 
     def name
       ch_name('console')
