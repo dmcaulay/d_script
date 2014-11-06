@@ -42,9 +42,9 @@ describe DScript::Runner do
     end
 
     it "opens the output file" do
-      File.exists?(output_file).should be_false
+      File.exists?(output_file).should == false
       runner.set_script(script_payload)
-      File.exists?(output_file).should be_true
+      File.exists?(output_file).should == true
     end
 
     it "tells the master that it's ready" do
