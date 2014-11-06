@@ -2,44 +2,29 @@ require 'spec_helper'
 
 describe DScript::EventEmitter do
   let(:emitter) { Emitter.new }
-  before(:each) do
-    @called = false
-    emitter.on(:test_ev) { @called = true }
-  end
 
-  describe "#on" do
-    it "calls the method on emit" do
-      emitter.emit(:test_ev)
-      @called.should be_true
-    end
-  end
-
-  describe "#emit" do
-    it "accepts data" do
-      emitter.on(:with_data) { |data| @called_sym = data }
-      emitter.on("with_data") { |data| @called_s = data }
-      emitter.emit(:with_data, "test-data")
-      @called_sym.should == "test-data"
-      @called_s.should == "test-data"
-    end
-  end
-
-  describe "on" do
-    it "allows you to call class events" do
-      emitter.emit(:class_ev)
-      emitter.called_class_ev.should be_true
-    end
+  it "emits data to the subscribers" do
+    emitter.emit(:test_ev, "test-data")
+    emitter.data_1.should == "test-data"
+    emitter.data_2.should == "test-data"
+    emitter.emit("test_ev", "test-string")
+    emitter.data_1.should == "test-string"
   end
 
   class Emitter
     include DScript::EventEmitter
 
-    attr_accessor :called_class_ev
+    attr_accessor :data_1, :data_2
 
-    on :class_ev, :class_ev
+    on :test_ev, :test_1
+    on "test_ev", :test_2
 
-    def class_ev
-      @called_class_ev = true
+    def test_1(data)
+      @data_1 = data
+    end
+
+    def test_2(data)
+      @data_2 = data
     end
   end
 end

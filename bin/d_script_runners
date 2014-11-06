@@ -12,11 +12,11 @@ end.to_hash
 name = opts[:name]
 num_runners = opts[:num_runners] || 1000
 env = opts[:env] || 'development'
-redis_settings = { url: opts[:redis] || "redis://localhost:6379" }
+redis_url = opts[:redis] || "redis://localhost:6379"
 
-puts "d_script:slave started with name=#{name} env=#{env}"
+puts "d_script:runners started with name=#{name} env=#{env}"
 
-slave = DScript::Slave.new(name, redis_settings)
-slave.run(num_runners, env)
+runners = DScript::Runners.new
+runners.start(name: name, redis_url: redis_url, num_runners: num_runners, env: env)
 
 puts "done"
