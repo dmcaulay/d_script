@@ -1,32 +1,15 @@
 
 module DScript
   module EventEmitter
-    def events
-      @events ||= {}
-    end
-
-    def on(event, &block)
-      events[event] = block
-    end
-
     def emit(event, data = nil)
-      [event.to_s, event.to_sym].each do |ev|
-        invoke(events[ev], data) if events[ev]
-        invoke(method(class_events[ev]), data) if class_events[ev]
+      Array(events[event.to_sym]).each do |listener|
+        listener.call(self, data)
       end
     end
 
     private
 
-    def invoke(block, data)
-      if data
-       block.call(data)
-      else
-        block.call
-      end
-    end
-
-    def class_events
+    def events
       self.class.events
     end
 
@@ -37,11 +20,11 @@ module DScript
     # declare events at class level
     module ClassMethods
       def events
-        @events ||= {}
+        @events ||= Hash.new{|h, k| h[k] = Array.new }
       end
 
-      def on(event, method)
-        events[event] = method
+      def on(event, method_or_proc)
+        events[event.to_sym] << method_or_proc.to_proc
       end
     end
   end
