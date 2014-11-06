@@ -35,8 +35,8 @@ describe 'Main' do
   end
 
   xit 'survives a redis crash' do
-    pid = spawn("bundle exec bin/d_script_master #{script} -n #{name} -s 1 -e 100 -S 10 -o #{output_dir}")
-    spawn("bundle exec bin/d_script_runners -n #{name} -N 2")
+    pid = spawn("bin/d_script_master #{script} -n #{name} -s 1 -e 100 -S 10 -o #{output_dir}")
+    spawn("bin/d_script_runners -n #{name} -N 2")
     sleep 4
     redis_pid = `pgrep redis`
     Process.kill(9, redis_pid.to_i)

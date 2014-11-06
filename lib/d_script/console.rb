@@ -1,11 +1,11 @@
 module DScript
   class Console < Base
 
-    on :started, proc { next_cmd }
+    on :started, :next_cmd
 
-    on :status, proc { |data| puts data["status"]; next_cmd }
+    on :status, :status_complete
 
-    on :reloaded, proc { |data| puts "reloaded #{data["name"]}"; next_cmd }
+    on :reloaded, :reloaded_complete
 
     def name
       ch_name('console')
@@ -15,7 +15,17 @@ module DScript
       start
     end
 
-    def next_cmd
+    def status_complete(data)
+      puts data["status"]
+      next_cmd
+    end
+
+    def reloaded_complete(data)
+      puts "reloaded #{data["name"]}"
+      next_cmd
+    end
+
+    def next_cmd(_ = nil)
       # parse cmd
       input, id, args = $stdin.gets.chomp, false, false
       if /(\w+) (\d+) (.*)$/.match(input)

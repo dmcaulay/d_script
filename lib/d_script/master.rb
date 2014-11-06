@@ -73,9 +73,11 @@ module DScript
     end
 
     def runners_status
-      runners.each_with_object("") do |k, v, status|
+      status = ""
+      runners.each do |k, v|
         status << "\n#{k} = #{v}"
       end
+      status
     end
 
     def print_status(data)
