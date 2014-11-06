@@ -14,7 +14,7 @@ num_runners = opts[:num_runners] || 1000
 env = opts[:env] || 'development'
 redis_url = opts[:redis] || "redis://localhost:6379"
 
-puts "d_script:slave started with name=#{name} env=#{env}"
+puts "d_script:runners started with name=#{name} env=#{env}"
 
 runners = DScript::Runners.new
 runners.start(name: name, redis_url: redis_url, num_runners: num_runners, env: env)

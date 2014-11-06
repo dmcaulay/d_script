@@ -7,8 +7,6 @@ module DScript
 
     on :reloaded, proc { |data| puts "reloaded #{data["name"]}"; next_cmd }
 
-    on :runners_set, proc { |data| puts "#{data["name"]} set runners"; next_cmd }
-
     def name
       ch_name('console')
     end
@@ -31,15 +29,9 @@ module DScript
       # handle cmd
       case cmd
       when "status"
-        unless id
-          d_emit(ch_name("master"), event: "status")
-        else
-          d_emit(ch_name("slave", id), event: "status")
-        end
+        d_emit(ch_name("master"), event: "status")
       when "reload"
         d_emit(ch_name("runner", id), event: "reload")
-      when "num_runners"
-        d_emit(ch_name("slave", id), event: "num_runners", num_runners: args.to_i)
       when "exit"
         stop
       else
