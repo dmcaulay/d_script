@@ -35,10 +35,15 @@ module DScript
       output.close
     end
 
+    # on :started, :register
     def register(_)
+      return if @registered
+      @registered = true
+
       d_emit(master_ch, event: "register", name: name)
     end
 
+    # on :registered, :set_script
     def set_script(data)
       @script = data["script"]
       load_script
@@ -49,6 +54,7 @@ module DScript
       ready
     end
 
+    # on :next_block, :next_block
     def next_block(data)
       @_block = data
       output.puts "processing #{_block}"

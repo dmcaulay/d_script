@@ -17,6 +17,7 @@ describe DScript::Runner do
     Redis.any_instance.stub(:incr).and_return(1)
     FileUtils.rm_rf("#{output_dir}/.", secure: true)
     Object.send(:remove_const, :CurrentDScript) if defined?(CurrentDScript)
+    runner.stub(:d_emit)
    end
 
   describe "#name" do

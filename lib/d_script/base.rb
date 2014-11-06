@@ -41,7 +41,7 @@ module DScript
           end
         end
       rescue => error
-        log_error('sub', error)
+        log_error("sub #{name}", error)
         retry
       end
     end
@@ -54,7 +54,7 @@ module DScript
       begin
         publish(ch, data)
       rescue => error
-        log_error('pub', error)
+        log_error("pub #{ch}", error)
         retry
       end
     end
@@ -72,8 +72,8 @@ module DScript
     def log_error(name, error)
       puts error.inspect
       puts error.backtrace.join("\n")
-      puts "#{name} retrying in 1s"
-      sleep 1
+      puts "#{name} retrying in 5s"
+      sleep 5
     end
 
     def publish(ch, data)
