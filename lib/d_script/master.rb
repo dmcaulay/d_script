@@ -1,4 +1,3 @@
-
 module DScript
   class Master < Base
     attr_accessor :script, :output_dir, :start_id, :end_id,

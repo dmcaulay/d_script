@@ -22,6 +22,6 @@ output = opts[:output]
 puts "d_script:master started with name=#{name} script=#{script} start_id=#{start_id} end_id=#{end_id} block_size=#{block_size} output=#{output}"
 
 master = DScript::Master.new(name, redis_settings)
-master.run(script, output, start_id, end_id, block_size)
+master.run(script: script, output_dir: output, start_id: start_id, end_id: end_id, block_size: block_size)
 
 puts "done"

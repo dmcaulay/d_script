@@ -35,12 +35,8 @@ module DScript
       output.close
     end
 
-    def register
+    def register(_)
       d_emit(master_ch, event: "register", name: name)
-    end
-
-    def ready
-      d_emit(master_ch, event: "ready", name: name)
     end
 
     def set_script(data)
@@ -70,6 +66,10 @@ module DScript
 
     def load_script
       load script
+    end
+
+    def ready
+      d_emit(master_ch, event: "ready", name: name)
     end
 
     def handle_block

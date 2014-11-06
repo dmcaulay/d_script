@@ -8,4 +8,10 @@ namespace :d_script do
     runner = DScript::Runner.new(name, url: redis_url)
     runner.run
   end
+
+  if ENV["D_SCRIPT_ENV"] == "test"
+    task :environment do
+      require 'd_script'
+    end
+  end
 end

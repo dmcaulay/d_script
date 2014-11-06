@@ -46,13 +46,13 @@ module DScript
       end
     end
 
-    def stop
+    def stop(_ = nil)
       sub_redis.unsubscribe(name)
     end
 
     def d_emit(ch, data)
       begin
-        pub_redis.publish(ch, data.to_json)
+        publish(ch, data)
       rescue => error
         log_error('pub', error)
         retry
@@ -74,6 +74,11 @@ module DScript
       puts error.backtrace.join("\n")
       puts "#{name} retrying in 1s"
       sleep 1
+    end
+
+    def publish(ch, data)
+      count = pub_redis.publish(ch, data.to_json)
+      raise "no subscribers!" if count < 1
     end
   end
 end
