@@ -1,5 +1,7 @@
 # DScript
 
+[![Build Status](https://travis-ci.org/weheartit/d_script.svg?branch=master)](https://travis-ci.org/weheartit/d_script)
+
 DScript allows you to load a script and distribute the processing across multiple runners on multiple servers. DScript uses Redis to keep track of the script progress and to communicate to the script runners.
 
 ## Installation
