@@ -1,23 +1,23 @@
 require "spec_helper"
 
-describe DScript::Base do
+RSpec.describe DScript::Base do
   let(:d_script) { DScriptTest.new("test") }
 
   describe '#ch_name' do
     it 'has an :id suffix if :id is present' do
-      d_script.ch_name("foo", 1).should == "test-foo-1"
+      expect(d_script.ch_name("foo", 1)).to eql("test-foo-1")
     end
 
     it 'does not use an :id suffix if it is not present'  do
-      d_script.ch_name("foo").should == "test-foo"
+      expect(d_script.ch_name("foo")).to eql("test-foo")
     end
   end
 
   describe '#d_emit' do
     it "emits event over the redis subscription" do
-      d_script.should_receive(:shutdown)
+      expect(d_script).to receive(:shutdown)
       d_script.start
-      d_script.payload.should == {"event" => "test", "payload" => "test data"}
+      expect(d_script.payload).to eql({ "event" => "test", "payload" => "test data" })
     end
   end
 

@@ -1,13 +1,13 @@
 require "spec_helper"
 
-describe 'Main' do
+RSpec.describe 'Main' do
   let(:root) { File.dirname(File.join(File.dirname(__FILE__), '..', '..')) }
   let(:script) { File.join(root, "fixtures", "integration_script.rb") }
   let(:output_dir) { File.join(root, "logs") }
 
   let(:name) { "integration_test" }
   let(:settings) do
-    { driver: "ruby", url: "redis://localhost:6379", db: 0, timeout: 5 }
+    { driver: "ruby", url: ENV['REDIS_URL'] || "redis://localhost:6379", db: 0, timeout: 5 }
   end
 
   before(:each) do
@@ -22,16 +22,16 @@ describe 'Main' do
       next if f == '.' or f == '..'
       str << File.read(File.join(output_dir, f))
     end
-    contents.should match /1 11/
-    contents.should match /11 21/
-    contents.should match /21 31/
-    contents.should match /31 41/
-    contents.should match /41 51/
-    contents.should match /51 61/
-    contents.should match /61 71/
-    contents.should match /71 81/
-    contents.should match /81 91/
-    contents.should match /91 101/
+    expect(contents).to match(/1 11/)
+    expect(contents).to match(/11 21/)
+    expect(contents).to match(/21 31/)
+    expect(contents).to match(/31 41/)
+    expect(contents).to match(/41 51/)
+    expect(contents).to match(/51 61/)
+    expect(contents).to match(/61 71/)
+    expect(contents).to match(/71 81/)
+    expect(contents).to match(/81 91/)
+    expect(contents).to match(/91 101/)
   end
 
   xit 'survives a redis crash' do
@@ -47,15 +47,15 @@ describe 'Main' do
       next if f == '.' or f == '..'
       str << File.read(File.join(output_dir, f))
     end
-    contents.should match /1 11/
-    contents.should match /11 21/
-    contents.should match /21 31/
-    contents.should match /31 41/
-    contents.should match /41 51/
-    contents.should match /51 61/
-    contents.should match /61 71/
-    contents.should match /71 81/
-    contents.should match /81 91/
-    contents.should match /91 101/
+    expect(contents).to match(/1 11/)
+    expect(contents).to match(/11 21/)
+    expect(contents).to match(/21 31/)
+    expect(contents).to match(/31 41/)
+    expect(contents).to match(/41 51/)
+    expect(contents).to match(/51 61/)
+    expect(contents).to match(/61 71/)
+    expect(contents).to match(/71 81/)
+    expect(contents).to match(/81 91/)
+    expect(contents).to match(/91 101/)
   end
 end

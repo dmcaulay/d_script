@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe DScript::EventEmitter do
+RSpec.describe DScript::EventEmitter do
   let(:emitter) { Emitter.new }
 
   it "emits data to the subscribers" do
     emitter.emit(:test_ev, "test-data")
-    emitter.data_1.should == "test-data"
-    emitter.data_2.should == "test-data"
+    expect(emitter.data_1).to eql("test-data")
+    expect(emitter.data_2).to eql("test-data")
     emitter.emit("test_ev", "test-string")
-    emitter.data_1.should == "test-string"
+    expect(emitter.data_1).to eql("test-string")
   end
 
   class Emitter

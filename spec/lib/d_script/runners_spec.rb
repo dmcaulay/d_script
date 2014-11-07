@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe DScript::Runners do
+RSpec.describe DScript::Runners do
 end
