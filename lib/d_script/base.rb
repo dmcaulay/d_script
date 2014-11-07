@@ -41,7 +41,7 @@ module DScript
           end
         end
       rescue => error
-        log_error("sub #{name}", error)
+        handle_error("sub #{name}", error)
         retry
       end
     end
@@ -54,7 +54,7 @@ module DScript
       begin
         publish(ch, data)
       rescue => error
-        log_error("pub #{ch}", error)
+        handle_error("pub #{ch}", error)
         retry
       end
     end
@@ -69,9 +69,22 @@ module DScript
       @sub_redis ||= Redis.new(settings)
     end
 
-    def log_error(name, error)
+    def disconnect
+      begin
+        pub_redis.quit
+        sub_redis.quit
+      rescue => e
+      ensure
+        puts "DISCONNECTED #{name}"
+        @pub_redis = nil
+        @sub_redis = nil
+      end
+    end
+
+    def handle_error(name, error)
       puts error.inspect
       puts error.backtrace.join("\n")
+      disconnect if error.is_a?(Redis::ConnectionError)
       puts "#{name} retrying in 5s"
       sleep 5
     end
