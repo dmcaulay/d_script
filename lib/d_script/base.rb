@@ -84,7 +84,7 @@ module DScript
     def handle_error(name, error)
       puts error.inspect
       puts error.backtrace.join("\n")
-      disconnect if error.is_a?(Redis::ConnectionError)
+      disconnect
       puts "#{name} retrying in 5s"
       sleep 5
     end
