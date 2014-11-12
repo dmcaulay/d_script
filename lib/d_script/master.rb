@@ -1,10 +1,7 @@
-require 'd_script/master/runners'
-
 module DScript
   class Master < Base
-    include Runners
-
-    attr_accessor :script, :output_dir, :start_id, :end_id, :block_size, :current_id, :runners, :start_time
+    attr_accessor :script, :output_dir, :start_id, :end_id,
+                  :block_size, :current_id, :runners, :start_time
 
     def name
       ch_name('master')
@@ -27,10 +24,11 @@ module DScript
     end
 
     # events
+    on :register, :register_runner
     on :ready, :runner_ready
     on :status, :print_status
 
-    def run(script, output_dir, start_id, end_id, block_size)
+    def run(script:, output_dir:, start_id:, end_id:, block_size:)
       # init
       @script = script
       @output_dir = output_dir
@@ -47,6 +45,7 @@ module DScript
       puts "total time: #{Time.now - start_time}"
     end
 
+    # on :ready, :runner_ready
     def runner_ready(data)
       runner_ch = data["name"]
 
@@ -59,6 +58,26 @@ module DScript
       end
 
       d_emit(runner_ch, res)
+    end
+
+    def register_runner(data)
+      runner_ch = data["name"]
+      puts "##{runner_ch} registered (#{runners.length + 1} runners)"
+      d_emit(runner_ch, event: "registered", script: script, output_dir: output_dir)
+    end
+
+    def unregister_runner(ch)
+      runners.delete(ch)
+      puts "##{ch} unsubscribed (#{runners.length} runners)"
+      stop if runners.empty?
+    end
+
+    def runners_status
+      status = ""
+      runners.each do |k, v|
+        status << "\n#{k} = #{v}"
+      end
+      status
     end
 
     def print_status(data)

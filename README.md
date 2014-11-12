@@ -1,5 +1,7 @@
 # DScript
 
+[![Build Status](https://travis-ci.org/weheartit/d_script.svg?branch=master)](https://travis-ci.org/weheartit/d_script)
+
 DScript allows you to load a script and distribute the processing across multiple runners on multiple servers. DScript uses Redis to keep track of the script progress and to communicate to the script runners.
 
 ## Installation
@@ -22,10 +24,10 @@ When you run a script there are 3 different parts. The master, slaves and runner
 
 ### The Master
 
-The master process keeps track of the progress and distributes to the work to the slaves.
+The master process keeps track of the progress and distributes the work to the slaves.
 
-```bash
-d_script_master [SCRIPT_FILE] [OPTIONS]
+```
+$ d_script_master [SCRIPT_FILE] [OPTIONS]
 
 start the master process with the SCRIPT_FILE
 
@@ -43,15 +45,15 @@ options:
 -o, --output
   the directory for logging the progress and any errors that occur.
 
-bundle exec d_script_master script/long_script.rb -n long_script -s 0 -e 11000000 -S 100 -o /script/output -r redis://localhost:6379
+$ bundle exec d_script_master script/long_script.rb -n long_script -s 0 -e 11000000 -S 100 -o /script/output -r redis://localhost:6379
 ```
 
 ### The Slave
 
 The slave processes communicate directly with the master and start n runners that process each block. You usually start one slave per server.
 
-```bash
-d_script_slave [OPTIONS]
+```
+$ d_script_slave [OPTIONS]
 
 -n, --name
   the name of the job. this is used to connect to the master.
@@ -62,7 +64,7 @@ d_script_slave [OPTIONS]
 -r, --redis
   the redis url for the script.
 
-bundle exec d_script_slave -n long_script -N 100 -e production -r redis://localhost:6379
+$ bundle exec d_script_slave -n long_script -N 100 -e production -r redis://localhost:6379
 ```
 
 ### The Runner
@@ -89,20 +91,20 @@ end
 
 The console can be used to monitor the job, update the number of runners for a slave and reload the script on a runner.
 
-```bash
-d_script_console [OPTIONS]
+```
+$ d_script_console [OPTIONS]
 
 -n, --name
   the name of the job. this is used to connect to the master, slave or runner.
 -r, --redis
   the redis url for the script.
 
-bundle exec d_script_console -n long_script -r redis://localhost:6379
+$ bundle exec d_script_console -n long_script -r redis://localhost:6379
 ```
 
 The console runs the following commands.
 
-```bash
+```
 # get the status of the current job
 status
 
