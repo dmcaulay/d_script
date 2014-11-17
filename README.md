@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-When you run a script there are 3 different parts. The master, slaves and runners.
+d_script comes with 3 helper scripts that help you start and monitor the progress of your task.
 
 ### The Master
 
@@ -48,12 +48,12 @@ options:
 $ bundle exec d_script_master script/long_script.rb -n long_script -s 0 -e 11000000 -S 100 -o /script/output -r redis://localhost:6379
 ```
 
-### The Slave
+### The Runners
 
-The slave processes communicate directly with the master and start n runners that process each block. You usually start one slave per server.
+The runners script starts n runners that process each block. You usually run this once on each server processing the script.
 
 ```
-$ d_script_slave [OPTIONS]
+$ d_script_runners [OPTIONS]
 
 -n, --name
   the name of the job. this is used to connect to the master.
@@ -64,27 +64,7 @@ $ d_script_slave [OPTIONS]
 -r, --redis
   the redis url for the script.
 
-$ bundle exec d_script_slave -n long_script -N 100 -e production -r redis://localhost:6379
-```
-
-### The Runner
-
-The runner processes are the ones doing all the work. They communicate to the slave and let the slave know when they are ready to process the next block. Each runner is a `rake` task that loads your Rails environment. The runners are never started manually. They are started by the slave process.
-
-### The Script
-
-The script needs to implement `CurrentDScript.run`. It is called from a `rake` task so your entire Rails environment is available from the script. Here's a simple example.
-
-```rb
-class CurrentDScript
-  def self.run(start_id, end_id, output)
-    User.where(["id >= ? AND id < ?", start_id, end_id]).find_each do |user|
-      puts "processing #{user.id}"
-      output.puts "id #{user.id} email #{user.email}"
-      sleep(1)
-    end
-  end
-end
+$ bundle exec d_script_runners -n long_script -N 100 -e production -r redis://localhost:6379
 ```
 
 ### The Console
@@ -119,6 +99,26 @@ num_runners slave_id number_of_runners
 
 # exit the console
 exit
+```
+
+### The Runner
+
+The runner processes are the ones doing all the work. They communicate to the master and let the master know when they are ready to process the next block. Each runner is a `rake` task that loads your Rails environment. The runners are never started manually. They are started by the runners command.
+
+### The Script
+
+The script defines the task that you are running. It needs to implement `CurrentDScript.run`. It is called from a `rake` task so your entire Rails environment is available from the script. Here's a simple example.
+
+```rb
+class CurrentDScript
+  def self.run(start_id, end_id, output)
+    User.where(["id >= ? AND id < ?", start_id, end_id]).find_each do |user|
+      puts "processing #{user.id}"
+      output.puts "id #{user.id} email #{user.email}"
+      sleep(1)
+    end
+  end
+end
 ```
 
 ## Contributing
