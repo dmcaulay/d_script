@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-d_script comes with 3 helper scripts that help you start and monitor the progress of your task.
+DScript comes with 3 helper scripts that help you start and monitor the progress of your task.
 
 ### The Master
 
