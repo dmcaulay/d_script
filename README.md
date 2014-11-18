@@ -69,7 +69,7 @@ $ bundle exec d_script_runners -n long_script -N 100 -e production -r redis://lo
 
 ### The Console
 
-The console can be used to monitor the job, update the number of runners for a slave and reload the script on a runner.
+The console can be used to monitor the job and reload the script on a runner.
 
 ```
 $ d_script_console [OPTIONS]
@@ -88,14 +88,8 @@ The console runs the following commands.
 # get the status of the current job
 status
 
-# get the status of a slave
-status slave_id
-
 # reload the script on a runner
 reload runner_id
-
-# change the number of runners on a slave
-num_runners slave_id number_of_runners
 
 # exit the console
 exit
