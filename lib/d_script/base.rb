@@ -91,7 +91,10 @@ module DScript
 
     def publish(ch, data)
       count = pub_redis.publish(ch, data.to_json)
-      raise "no subscribers!" if count < 1
+      if count < 1
+        sleep 1
+        publish(ch, data)
+      end
     end
   end
 end
